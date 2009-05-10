@@ -41,6 +41,13 @@ class PerguntaAdmin(admin.ModelAdmin):
     list_filter = ['tipo', 'questionario']
 
 class RespostaAdmin(admin.ModelAdmin):
+    def textoOuAlternativa(obj):
+        resposta = obj.alternativa if obj.alternativa else obj.texto
+        return resposta if resposta else " --- Sem resposta --- " 
+    textoOuAlternativa.short_description = 'Resposta'
+
+    list_display = ('pergunta', textoOuAlternativa, 'atribuicao',)
+    list_filter = ['atribuicao',]
     pass
     
 class AlternativaAdmin(admin.ModelAdmin):
@@ -48,11 +55,6 @@ class AlternativaAdmin(admin.ModelAdmin):
     list_filter = ['pergunta',]
     search_fields = ['texto']
     ordering = ['pergunta']
-
-#
-#class RespostaAdmin(admin.ModelAdmin):
-#    pass
-
 
 #class GenreAdmin(admin.ModelAdmin):
 #    list_display = ('name',)
