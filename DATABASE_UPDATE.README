@@ -1,0 +1,5 @@
+pra quem não percebeu a tabela "Resposta" tem um campo a mais agora. Pra colocá-lo basta:
+
+ALTER TABLE `sad_resposta` ADD `modelo` BOOL NOT NULL AFTER `atribuicao_id` 
+
+seguinte o phpmyadmin
