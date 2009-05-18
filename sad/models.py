@@ -92,6 +92,7 @@ class Resposta(models.Model):
     alternativa = models.ForeignKey(Alternativa, null=True)
     hash_aluno = models.CharField(max_length=32)
     atribuicao = models.ForeignKey(Atribuicao)
+    modelo = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.texto
