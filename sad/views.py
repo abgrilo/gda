@@ -111,7 +111,6 @@ def commit_answer_course(request, ano, semestre, disciplina, turma):
         atribuicao = models.Atribuicao.objects.filter(disciplina=disciplina,
                 turma=turma, semestre=dbSemester(semestre,ano))[0]
         hash = new(request.user.username).hexdigest()
-        print sorted(request.GET)
         for resp in sorted(request.GET):
             if resp.startswith('pa'):  # alternativas
                 p_id = resp.replace('pa','')
