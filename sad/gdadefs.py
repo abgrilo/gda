@@ -7,3 +7,9 @@ def dbSemester(semestre, ano):
     else: # semestre par
         return '%s-08-01' % ano
     
+def counterDecorator(x = [0]):
+    def foo(x = [0]):
+        ret = x[0]
+        x[0] += 1
+        return ret
+    return foo
