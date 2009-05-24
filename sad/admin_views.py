@@ -37,9 +37,45 @@ def pick_respostas(request):
         } )
 
 def pick_respostas_modelo(request, ano, semestre, disciplina, turma):
+    u"""Escolher as respostas modelos de uma disciplina+professor.
+    Estamos analisando todos os textos (as alternativas podem ter textos também)"""
+    d = models.Disciplina.objects.filter(sigla=disciplina)[0]
+    p = models.Atribuicao.objects.filter(disciplina=d, turma=turma, semestre=dbSemester(semestre,ano))[0].professor
+    atrib = models.Atribuicao.objects.filter(disciplina=d, professor=p, semestre=dbSemester(semestre,ano))
+
+    form = []
+    pergs = models.Pergunta.objects.filter(questionario=d.questionario)
+    for p in pergs:
+        for a in atrib:
+            r = models.Resposta.objects.filter(atribuicao=a, pergunta=p)
+            resps = [{'id' : resp.id, 'texto' : resp.texto, 'modelo' : resp.modelo} for resp in r if resp.texto]
+            if resps:
+                form.append({'perg' : p.texto, 'resps' : resps})
+        
     return render_to_response('admin/pick_respostas_modelo.html', {
+        'disc' : disciplina,
+        'professor' : a.professor.nome,
+        'data' : form,
+        } )
+
+def pick_respostas_modelo_commit(request, ano, semestre, disciplina, turma):
+    if request.POST:  # se houver respostas
+        for resp in sorted(request.POST):
+            r_id = resp.replace('id','')
+            r = models.Resposta.objects.filter(id=int(r_id))[0]
+            r.modelo = bool(request.POST[resp])
+            r.save()
+    else:
+        return render_to_response('sad/consistency_error.html', {} )
+
+    d = models.Disciplina.objects.filter(sigla=disciplina)[0]
+    a = models.Atribuicao.objects.filter(disciplina=d, turma=turma, semestre=dbSemester(semestre,ano))[0]
+    return render_to_response('admin/pick_respostas_modelo_commit.html', {
+        'disc' : disciplina,
+        'professor' : a.professor.nome,
         } )
 
 # only staff will be able to view this views
 pick_respostas = staff_member_required(pick_respostas)
 pick_respostas_modelo = staff_member_required(pick_respostas_modelo)
+pick_respostas_modelo_commit = staff_member_required(pick_respostas_modelo_commit)
