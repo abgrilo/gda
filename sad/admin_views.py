@@ -11,17 +11,25 @@ def pick_respostas(request):
     elegiveis = []
     ultima_atribuicao = None
     resps = 0
+    resps_modelo = False
     for d in models.Disciplina.objects.all():
         # pegando atribuiçoes com professores distintos
         for a in models.Atribuicao.objects.filter(disciplina=d).order_by('professor'):
             if not ultima_atribuicao:
                 ultima_atribuicao = a
-            resps += len(models.Resposta.objects.filter(atribuicao=a))
-            # pegando apenas atribuicoes com respostas
-            if ultima_atribuicao.professor != a.professor and resps and a.professor != 'não cadastrado no sistema':
-                elegiveis.append({'atribuicao' : ultima_atribuicao, 'num' : resps})
+            # computando os dados da última disciplina com o mesmo professor
+            if ultima_atribuicao.professor != a.professor:
+                if resps:  # apenas coloca na interface as que tem respostas
+                    elegiveis.append({'atribuicao' : ultima_atribuicao, 'num' : resps, 'modelo' : resps_modelo})
                 ultima_atribuicao = a
                 resps = 0
+                resps_modelo = False
+
+            # contabilizando respostas dissertativas apenas
+            resps += len([r for r in models.Resposta.objects.filter(atribuicao=a) if r.texto])
+
+            if not resps_modelo:  # se houve alguma em uma atribuicao com o mesmo professor, nao recompute
+                resps_modelo = bool(models.Resposta.objects.filter(atribuicao=a, modelo=True))
     return render_to_response('admin/pick_respostas.html', {
         'atrib': elegiveis,
         'ano' : '2008',
