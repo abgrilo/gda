@@ -13,12 +13,15 @@
 			{% if atrib %}
 				<ul>
 				{% for a in atrib %}
-				<li><a href="IC/{{ano}}s{{semestre}}/{{a.atribuicao}}">{{a.atribuicao}}</a> com {{a.atribuicao.professor}}
+				<li><a href="{{ano}}s{{semestre}}/{{a.atribuicao}}/">{{a.atribuicao.disciplina}}</a> com {{a.atribuicao.professor}}
 				({% ifequal a.num  1  %}
 					1 resposta total
 				{% else %}
 					{{a.num}} respostas totais
-				{% endifequal %})</li>
+				{% endifequal %})
+                {% if a.modelo %}
+                    <b>(Há respostas modelos inseridas)</b>
+                {% endif %}</li>
 				{% endfor %}
 				</ul>
 			{% else %}
