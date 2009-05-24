@@ -1,26 +1,40 @@
 {% extends "admin/base.html" %}
+{% load i18n %}
+{% block title %}Escolhendo respostas {{ disc }} / {{ professor }} | {% trans 'GDA' %}{% endblock %}
+            
 {% block content %}
-
+    <form method='POST' action='commit/'>
 	<div class="post">
 		<div class="title">
-			<h2>Escolhendo respostas modelos</h2>
-			<p><small>Escolha uma disciplina e selecione as respostas modelos para cada pergunta feita</small></p>
+            <h2>Escolhendo respostas modelos da disciplina {{ disc }} com professor(a) {{ professor }}</h2>
+			<p><small>Selecione as respostas dissertativas modelos a fim de serem exibidas no guia oficial do GDA</small></p>
 		</div>
 		<div class="entry">
-			{% if atrib %}
+			{% if data %}
 				<ul>
-				{% for a in atrib %}
-				<li><a href="IC/{{ano}}s{{semestre}}/{{a.atribuicao}}">{{a.atribuicao}}</a> com {{a.atribuicao.professor}}
-				({% ifequal a.num  1  %}
-					1 resposta total
-				{% else %}
-					{{a.num}} respostas totais
-				{% endifequal %})</li>
+				{% for questao in data %}
+                    <li>{{ questao.perg }}
+                    {% if questao.resps %}
+                        {% for resp in questao.resps %}
+                            <br>
+                            {% if resp.modelo %}
+                            <input type="checkbox" name="id{{ resp.id }}" value="True" checked>
+                            {% else %}
+                            <input type="checkbox" name="id{{ resp.id }}" value="True">
+                            {% endif %}
+                            </input>{{ resp.texto }}
+                        {% endfor %}
+                    {% else %}
+                        <small>Sem respostas para essa quest&atilde;o</small>
+                    {% endif %}
+                    </li>
 				{% endfor %}
 				</ul>
 			{% else %}
-				<p>Nenhuma resposta adquirida!</p>
+				<p>Nenhuma resposta para essa atribui&ccedil;&atilde;o!</p>
 			{% endif %}
 		</div>
 	</div>
+    <input type='submit' value='Atualizar'>
+    </form>
 {% endblock %}

@@ -1,0 +1,12 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+{% block title %}Atualizando respostas de {{ disc }} / {{ professor }} | {% trans 'GDA' %}{% endblock %}
+            
+{% block content %}
+	<div class="post">
+		<div class="title">
+            <h2>Escolhas atualizada!</h2>
+            <small><a href="javascript:history.back(1)">Volte para conferir</a> ou <a href="/gda/admin/alternative/pick_respostas/IC/">volte e selecione mais alguma outra disciplina</a></small>
+		</div>
+	</div>
+{% endblock %}
