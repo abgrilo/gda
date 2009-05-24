@@ -1,4 +1,4 @@
-# GDA Functinos
+# GDA Functions
 
 def dbSemester(semestre, ano):
     # transforma o semestre 1 ou 2 em datas, coerente com o banco
