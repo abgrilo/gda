@@ -19,8 +19,9 @@ urlpatterns = patterns('',
                        
                        # Custom views need to be added before the contrib views
                        #(r'^gda/admin/respostas/pick/', admin_views.pick_resposta),
-                       (r'^gda/admin/alternative/pick_respostas/IC/', admin_views.pick_respostas),
+                       (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/(?P<ano>\d+)[sS](?P<semestre>\d)/(?P<disciplina>[A-Z][A-Z]\d+)(?P<turma>[A-Z1-9#])/commit/$', admin_views.pick_respostas_modelo_commit),
                        (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/(?P<ano>\d+)[sS](?P<semestre>\d)/(?P<disciplina>[A-Z][A-Z]\d+)(?P<turma>[A-Z1-9#])/$', admin_views.pick_respostas_modelo),
+                       (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/', admin_views.pick_respostas),
                        (r'^gda/admin/alternative/pick_respostas/', admin_views.pick_respostas),
                        # Uncomment the next line to enable the admin:
                        (r'^gda/admin/(.*)', admin.site.root),
