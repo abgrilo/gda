@@ -35,7 +35,7 @@ urlpatterns = patterns('',
                        (r'^gda/[Ii][Cc]/(?P<ano>\d+)[sS](?P<semestre>\d)/answer/$', views.all_to_answer),
                        (r'^gda/[Ii][Cc]/(?P<ano>\d+)[sS](?P<semestre>\d)/(?P<disciplina>[A-Z][A-Z]\d+)(?P<turma>[A-Z1-9#])/answer/$', views.answer_course),
                        (r'^gda/[Ii][Cc]/(?P<ano>\d+)[sS](?P<semestre>\d)/(?P<disciplina>[A-Z][A-Z]\d+)(?P<turma>[A-Z1-9#])/commit/$', views.commit_answer_course),
-                       (r'^gda/(.*/)?(?P<path>.*\.css)$', 'django.views.static.serve', {'document_root': os.path.join(PROJECT_ROOT_PATH,'/templates/css/') }),
-                       (r'^gda/(.*/)?(?P<path>.*\.(jpg|png|gif))$', 'django.views.static.serve', {'document_root': os.path.join(PROJECT_ROOT_PATH,'/templates/img/') }),
+                       (r'^gda/(.*/)?(?P<path>.*\.css)$', 'django.views.static.serve', {'document_root': os.path.join(PROJECT_ROOT_PATH,'templates/css') }),
+                       (r'^gda/(.*/)?(?P<path>.*\.(jpg|png|gif))$', 'django.views.static.serve', {'document_root': os.path.join(PROJECT_ROOT_PATH,'templates/img') }),
                        )
 
