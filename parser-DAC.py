@@ -67,7 +67,7 @@ def add_disciplina(ld):
         q = Questionario.objects.get(tipo='default')
     except:
         # então não tem o questionário 'default'... hum, o que iremos fazer?!
-        q = Questionario(tipo='default', texto='default', semestre='2008-08-01')
+        q = Questionario(tipo='default', texto='default', semestre='2010-01-01')
         q.save()
     # inclui Disciplina no BD e cria lista com elas
     r = []
@@ -173,7 +173,7 @@ def get_matriculados(disc):
         dalu = re.compile(DRE_ALUNO)
         alunos = re.findall(dalu, s_turma)
         # cria a atribuicao
-        at = Atribuicao(disciplina = d[0], professor = p[0], turma=t, semestre='2008-08-01')
+        at = Atribuicao(disciplina = d[0], professor = p[0], turma=t, semestre='2010-01-01')
         at.save()
         #inclui os alunos
         for i in alunos:
@@ -226,8 +226,8 @@ def get_matriculados(disc):
 # Por enquanto temos:
 
 INSTITUTO='IC'
-ANO='2008'
-SEMESTRE='2'
+ANO='2010'
+SEMESTRE='1'
 
 all_stu = []
 
@@ -249,7 +249,7 @@ for d in ld:
 ## POS #
 SEMGRAD = '0'
 SEMPOS = SEMESTRE
-SEMPOS = '2' + SEMESTRE
+SEMPOS = '1' + SEMESTRE
 NIVEL =  'P'
 BASE_SITE = "wget http://www.dac.unicamp.br/sistemas/horarios/pos/P" \
     + SEMESTRE + "S/"
