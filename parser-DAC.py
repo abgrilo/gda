@@ -20,7 +20,7 @@ DRE_ALL_DISC = '<a href=".*.htm">(?P<disc_id>[A-Z][A-Z ][0-9]{3,3})(?P<disc_nome
 
 #var token = "319afb0f735e9927e685b7f048e9394d"; (exemplo)
 DRE_TOKEN = 'var token = "((?P<token>[0-9a-f]{32,32}))";'
-DRE_TURMAS = '<tr height="18">[\\t\\n ]*<td height="18" bgcolor="white" width="100" align="center" class="corpo">(?P<turma>[A-Z1-9#])</td>'
+DRE_TURMAS = '<td height="18" bgcolor="white" width="100" align="center" class="corpo">(?P<turma>[A-Z1-9#])  </td>'
 DRE_FILE = '(?P<site>fileDownloadPublico\.do)'
 DRE_ALUNO = '(?P<ra>[0-9]{5,7})[ ]*\\t(?P<nome>.*)[ ]*\\t(?P<curso>[0-9][0-9])\\t(?P<nivel>[A-Z])'
 DRE_PROF = 'Docente: (?P<docente>.*)\\r\\n'
