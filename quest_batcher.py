@@ -5,8 +5,10 @@
 Autor: Gustavo Serra Scalet
 Licença: GPLv3 ou mais recent
 """
-
 # Código feito para >=python2.5
+
+# FIXME: arrumar estas variaveis globais
+SEMESTRE = '2010-01-01'
 
 def main(argv = [__name__,]):
 	from sad.models import Questionario, Pergunta, Alternativa
@@ -19,7 +21,7 @@ def main(argv = [__name__,]):
 			q = Questionario.objects.filter(tipo=tipo)[0]
 		except:
 			# no existe esto questionario!!!
-			q = Questionario(tipo=tipo, texto=tipo, semestre='2008-08-01')
+			q = Questionario(tipo=tipo, texto=tipo, semestre=SEMESTRE)
 			print q
 			q.save()
 		# prepara as questoes
