@@ -186,7 +186,7 @@ def get_matriculados(disc):
             al = Aluno.objects.filter(username=ra)
             if not al:
                 nome_sem_acento = normalize('NFKD', i[1].decode('utf-8')).encode('ASCII', 'ignore')	
-                email = (nome_sem_acento[1][0])
+                email = (nome_sem_acento[0])
                 demail = re.compile(DRE_EMAIL)
                 n = re.search(demail, email)
                 email = email.lower()
@@ -237,7 +237,7 @@ BASE_SITE = "http://www.dac.unicamp.br/sistemas/horarios/grad/G" \
 ld = get_disc_grad()
 ld = set(ld)
 ld = list(ld)
-#ld = ld[:3] # Apenas na fase de desenvolvimento
+ld = ld[:3] # Apenas na fase de desenvolvimento
 for d in ld:
     get_matriculados(d)
 ## fim GRAD #
