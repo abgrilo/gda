@@ -8,6 +8,9 @@ from sad import models
 from gdadefs import *
 from md5 import new
 
+# FIXME: Arrumar estas variaveis globais
+ANO, SEMESTRE = '2010', '1'
+
 def show_all_semesters(request):
     semesters = ["Bla", "Creu", "GDA"]
     return render_to_response('sad/all_semesters.html', { 'semesters': semesters} )
@@ -144,7 +147,7 @@ def commit_answer_course(request, ano, semestre, disciplina, turma):
 def home(request):
     if request.user.is_authenticated():
         # proceed if already authenticated
-        return all_to_answer(request, '2008', '2') 
+        return all_to_answer(request, ANO, SEMESTRE) 
     else:
         return render_to_response('sad/home.html', {'error' : False,})
         
@@ -160,7 +163,7 @@ def login_auth(request, a):
             auth.login(request, user)
             # Redirect to a success page.
             #FIXME gambiarra
-            return all_to_answer(request, '2008', '2') 
+            return all_to_answer(request, ANO, SEMESTRE)
         else:
             # Show same error as an exception
             raise
