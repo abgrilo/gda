@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
+from unicodedata import normalize
 import re
 import sys, os
 import mechanize
@@ -184,15 +185,10 @@ def get_matriculados(disc):
                 ra = '0' + ra
             al = Aluno.objects.filter(username=ra)
             if not al:
-                email = (i[1][0])
+                nome_sem_acento = normalize('NFKD', i[1].decode('utf-8')).encode('ASCII', 'ignore')	
+                email = (nome_sem_acento[1][0])
                 demail = re.compile(DRE_EMAIL)
                 n = re.search(demail, email)
-                if n is None:
-                    # Modo que usa nossa inteligencia 
-                    print  "Digite a primeira letra sem o acento: " +  i[1]
-                    email = raw_input()
-                    # Modo trator
-                    #email = 'e'
                 email = email.lower()
                 email = email + ra + '@dac.unicamp.br'
 
@@ -241,6 +237,7 @@ BASE_SITE = "http://www.dac.unicamp.br/sistemas/horarios/grad/G" \
 ld = get_disc_grad()
 ld = set(ld)
 ld = list(ld)
+#ld = ld[:3] # Apenas na fase de desenvolvimento
 for d in ld:
     get_matriculados(d)
 ## fim GRAD #
