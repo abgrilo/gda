@@ -7,19 +7,25 @@ Licença: GPLv3 ou mais recente
 """
 
 teoricas = [
-  'MC348', 
+  'MC009',
+  'MC039',
+  'MC348',
+  'MC426', 
   'MC448', 
   'MC522', 
   'MC526', 
   'MC668', 
   'MC704', 
+  'MC714',
   'MC722', 
   'MC822', 
-  'MC823', 
   'MC878', 
+  'MC889', 
   'MC898', 
-  'MC910', 
-  'MC938', 
+  'MC910',
+  'MC920',  
+  'MC938',
+  'MC948', 
   'MC998', 
   'MO405', 
   'MO417', 
@@ -29,11 +35,17 @@ teoricas = [
 ]
 
 praticas = [ 
+  'MC011',
   'MC427', 
+  'MC613',
   'MC715', 
+  'MC723',
+  'MC747',
+  'MC823',
 ]
 
 teoricas_praticas = [
+  'MC001',
   'MC102', 
   'MC202', 
   'MC326', 
@@ -46,7 +58,8 @@ teoricas_praticas = [
   'MC548', 
   'MC636', 
   'MC750', 
-  'MC906', 
+  'MC906',
+  'MC942',  
   'MC930', 
   'MO640', 
 ]
@@ -70,18 +83,20 @@ topicos = [
   'MO818', 
   'MO825', 
   'MO827', 
-  'MO829', 
+  'MO829',
+  'MC908', 
   'MC914', 
   'MC918', 
-  'MC919', 
-  'MC953', 
+  'MC919',
+  'MC926', 
+  'MC953',
+  'MC956', 
   'MC964', 
   'MC976', 
 ]
 
 teoricas.extend([
 #No lo se - Grad
-  'MC039', 
   'MC852', 
   'MC923', 
   'MC940', 

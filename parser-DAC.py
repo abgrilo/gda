@@ -237,7 +237,7 @@ BASE_SITE = "http://www.dac.unicamp.br/sistemas/horarios/grad/G" \
 ld = get_disc_grad()
 ld = set(ld)
 ld = list(ld)
-ld = ld[:3] # Apenas na fase de desenvolvimento
+#ld = ld[:3] # Apenas na fase de desenvolvimento
 for d in ld:
     get_matriculados(d)
 ## fim GRAD #
