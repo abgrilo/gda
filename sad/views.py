@@ -18,6 +18,42 @@ def show_all_semesters(request):
 def show_all_courses(request, ano, semestre):
     return render_to_response('sad/all_courses.html', { 'ano': ano , 'semestre': semestre } )
 
+def view_result(request):
+  professores = models.Professor.objects.all()
+  disciplinas = models.Disciplina.objects.all()
+  return render_to_response('sad/view_result.html', { 'professores': professores , 'disciplinas': disciplinas } )
+
+def format_respostas(respostas):
+  result = []
+  anterior = None
+  for r in respostas:
+    if anterior == None or anterior.pergunta.id != r.pergunta.id:
+      atual = []
+      result.append(atual)
+      atual.append(r.pergunta.texto)
+      respostas = []
+      atual.append(respostas)
+    anterior = r
+    if r.pergunta.tipo == 'A':
+      if r.alternativa:
+        respostas.append(r.alternativa.texto)
+    else:
+      if r.texto:
+        respostas.append(r.texto)
+
+  return result
+
+def query_result(request):
+  professores = models.Professor.objects.all()
+  disciplinas = models.Disciplina.objects.all()
+  if request.POST:
+      professor = request.POST['professor']
+      disciplina = request.POST['disciplina']
+      if professor and disciplina:
+        respostas = models.Resposta.objects.filter(atribuicao__disciplina__sigla=disciplina, atribuicao__professor__id=professor).order_by('pergunta__id')
+        result = format_respostas(respostas)
+        return render_to_response('sad/view_result.html', { 'professores': professores , 'disciplinas': disciplinas, 'respostas': result} )
+  return render_to_response('sad/view_result.html', { 'professores': professores , 'disciplinas': disciplinas } )
 
 def show_all_answers(request, ano, semestre,disciplina):
     answers = ["Foi phoda!", "coxa!"]
@@ -104,6 +140,7 @@ def answer_course(request, ano, semestre, disciplina, turma):
                                     'perguntas': pergL,
                                     'respostas': respL,
                                     'nome': d.nome,
+                                    'atribuicao' : atr,
                                     } 
                                   )
     except:

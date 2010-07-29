@@ -23,9 +23,13 @@ urlpatterns = patterns('',
                        (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/(?P<ano>\d+)[sS](?P<semestre>\d)/(?P<disciplina>[A-Z][A-Z]\d+)(?P<turma>[A-Z1-9#])/$', admin_views.pick_respostas_modelo),
                        (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/', admin_views.pick_respostas),
                        (r'^gda/admin/alternative/pick_respostas/', admin_views.pick_respostas),
+                       (r'^gda/admin/new_avaliacao/', admin_views.new_avaliacao),
+                       (r'^gda/admin/add_avaliacao/', admin_views.add_avaliacao),
                        # Uncomment the next line to enable the admin:
                        (r'^gda/admin/(.*)', admin.site.root),
 
+                       (r'^gda/view_result', views.query_result),
+                       (r'^gda/resultados', views.view_result),
                        (r'^gda/$', views.home),
                        (r'^gda/(.*/)?auth/$', views.login_auth),
                        (r'^gda/logout/$', views.logout),

@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.contrib.admin.views.decorators import staff_member_required
 from sad import models
+from sad import parser_DAC
 
 def pick_respostas(request):
     elegiveis = []
@@ -57,6 +58,19 @@ def pick_respostas_modelo(request, ano, semestre, disciplina, turma):
         'professor' : a.professor.nome,
         'data' : form,
         } )
+
+def add_avaliacao(request):
+  if request.GET:
+      parser_DAC.buscarDados(request.GET['semestre'], request.GET['ano'])
+      semestre = request.GET['ano'] + '-' + '0' + request.GET['semestre'] + '-01'
+      dataInicio = request.GET['dataInicio']
+      dataFim = request.GET['dataFim']
+      a = models.Avaliacao(semestre=semestre, dataInicio=dataInicio, dataFim=dataFim )
+      a.save()
+      return render_to_response('admin/', {} )
+
+def new_avaliacao(request):
+  return render_to_response('admin/add_avaliacao.html', {} )
 
 def pick_respostas_modelo_commit(request, ano, semestre, disciplina, turma):
     if request.POST:  # se houver respostas
