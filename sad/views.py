@@ -2,6 +2,7 @@
 # -*- encoding: utf-8 -*-
 
 from django.contrib import auth
+from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from sad import models
@@ -159,9 +160,14 @@ def commit_answer_course(request, ano, semestre, disciplina, turma):
                 text = '' 
                 perg = models.Pergunta.objects.filter(id=p_id)[0]
                 alter = models.Alternativa.objects.filter(id=request.GET[resp])[0]
-                r = models.Resposta(pergunta=perg, texto=text, alternativa=alter, 
-                        hash_aluno=hash, atribuicao=atribuicao)
-                r.save()
+                r = models.Resposta.objects.filter(pergunta=perg, 
+                        hash_aluno=hash, 
+                        atribuicao=atribuicao)
+                if not r:
+                    r = models.Resposta(pergunta=perg, 
+                            texto=text, alternativa=alter, 
+                            hash_aluno=hash, atribuicao=atribuicao)
+                    r.save()
             else:  # dissertativa
                 p_id = resp.replace('pd','')
                 text = request.GET[resp]
@@ -169,7 +175,9 @@ def commit_answer_course(request, ano, semestre, disciplina, turma):
                 r = models.Resposta.objects.filter(pergunta = perg, 
                         atribuicao=atribuicao, hash_aluno = hash)
                 if r:
+                    print r
                     r = r[0]
+                    print r
                     r.texto = text
                     r.save()  
                 else:
