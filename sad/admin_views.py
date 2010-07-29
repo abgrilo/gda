@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 
 from django.contrib import auth
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.contrib.admin.views.decorators import staff_member_required
 from sad import models
@@ -67,7 +67,7 @@ def add_avaliacao(request):
       dataFim = request.GET['dataFim']
       a = models.Avaliacao(semestre=semestre, dataInicio=dataInicio, dataFim=dataFim )
       a.save()
-      return render_to_response('admin/', {} )
+      return HttpResponseRedirect('/gda/admin/')
 
 def new_avaliacao(request):
   return render_to_response('admin/add_avaliacao.html', {} )

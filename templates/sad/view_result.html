@@ -2,12 +2,12 @@
 {% block content %}
 <form method='POST' action='/gda/view_result'>
   <select name="professor" >
-    {% for p in professores %}
+    {% for p in professor %}
       <option value="{{p.id}}"> {{p.nome}} </option>
       {% endfor %}
   </select>    
   <select name="disciplina" >
-    {% for d in disciplinas %}
+    {% for d in disciplina %}
       <option value="{{d.sigla}}"> {{d.sigla}} </option>
     {% endfor %}
   </select>    
