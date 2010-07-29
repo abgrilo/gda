@@ -5,7 +5,7 @@ from unicodedata import normalize
 import re
 import sys, os
 import mechanize
-#import urllib2
+import urllib2
 #import pysqlite2
 import string
 from random import choice
@@ -28,6 +28,7 @@ DRE_PROF = 'Docente: (?P<docente>.*)\\r\\n'
 DRE_HOR_POS = '\<a href="(?P<pos_hor>[MD][0-9]{5,5}\.htm)"\>'
 DRE_HOR_POS_DETAIL = '<font size=-1>(?P<disc_id>[A-Z][A-Z ][0-9]{3,3})(?P<disc_nome>.*)   </font>'
 DRE_EMAIL = '^[A-Za-z]'
+INSTITUTO='IC'
 
 
 
@@ -50,14 +51,15 @@ def get_site(base, file):
 
     # FIXME: Fiz uma pequena gambiarra para pode pegar os dados em utf-8
     # Troquei o código abaixo pelo wget da página e um iconv
-    #s_disc = urllib2.urlopen(SITE_HOR).read().encode('iso8859-1').decode('utf-8')
+    #return urllib2.urlopen(base + file).read().encode('iso8859-1').decode('utf-8')
     os.system("wget " + base + file + " 2&> /dev/null")
     os.system("iconv -f iso8859-1 -t utf-8 " + file + " > " + file + ".utf8")
     f = open(file + ".utf8")
     site = f.read()
     f.close()
-    os.remove(file + ".utf8")
-    os.remove(file)
+   # os.remove(file + ".utf8")
+   # os.remove(file)
+    print site
     return site
 
 
@@ -86,9 +88,8 @@ def add_disciplina(ld):
 # existem várias modalidades de mestrado e doutorado enquanto na grad não. Por
 # isso duas funções aqui: get_disc_grad() and get_disc_pos().
 
-def get_disc_grad():
+def get_disc_grad(getbase):
     
-    getbase = BASE_SITE
     getfile = INSTITUTO + ".htm"
     s_disc = get_site(getbase, getfile)
     
@@ -99,8 +100,7 @@ def get_disc_grad():
     return r
 
 
-def get_disc_pos():
-    getbase = BASE_SITE
+def get_disc_pos(getbase):
     getfile = INSTITUTO + ".htm"
     s_disc = get_site(getbase, getfile)
     d_file = re.compile(DRE_HOR_POS)
@@ -119,8 +119,8 @@ def get_disc_pos():
 # dada uma disciplina, get_matriculados descobre quais as turmas existentes e
 # a partir desses dados descobre todos os dados sobre cada turma (alunos,
 # matriculados e professor)
-def get_matriculados(disc):
-
+def get_matriculados(disc, ano, nivel, semgrad='0', sempos='0'):
+    all_stu = []
     mech = mechanize.Browser()
     mech.set_handle_robots(False)
 
@@ -135,7 +135,7 @@ def get_matriculados(disc):
     token = m.group('token')
 
 # preenche o formulário pra pegar as turmas
-    res1 = mech.open("http://www.daconline.unicamp.br/altmatr/conspub_situacaovagaspordisciplina.do?org.apache.struts.taglib.html.TOKEN=" + token + "&txtDisciplina=" + disc + "&txtTurma=V&cboSubG=" + SEMGRAD + "&cboSubP="+ SEMPOS + "&cboAno=" + ANO + "&btnAcao=Continuar")
+    res1 = mech.open("http://www.daconline.unicamp.br/altmatr/conspub_situacaovagaspordisciplina.do?org.apache.struts.taglib.html.TOKEN=" + token + "&txtDisciplina=" + disc + "&txtTurma=V&cboSubG=" + semgrad + "&cboSubP="+ sempos + "&cboAno=" + ano + "&btnAcao=Continuar")
 
 # parseia o código da página e retira uma lista com as turmas
     site = res1.read()
@@ -143,7 +143,7 @@ def get_matriculados(disc):
     turma = re.findall(dturma, site)
    
     for t in turma:
-        res2 = mech.open("http://www.daconline.unicamp.br/altmatr/conspub_matriculadospordisciplinaturma.do?org.apache.struts.taglib.html.TOKEN=" + token + "&txtDisciplina=" + disc  + "&txtTurma=" + t + "&cboSubG=" + SEMGRAD + "&cboSubP=" + SEMPOS + "&cboAno=" + ANO + "&btnAcao=Continuar")
+        res2 = mech.open("http://www.daconline.unicamp.br/altmatr/conspub_matriculadospordisciplinaturma.do?org.apache.struts.taglib.html.TOKEN=" + token + "&txtDisciplina=" + disc  + "&txtTurma=" + t + "&cboSubG=" + semgrad + "&cboSubP=" + sempos+ "&cboAno=" + ano + "&btnAcao=Continuar")
 
         # verifica se a turma tem alunos, isto é,
         # se está disponivel o link DRE_FILE no site.
@@ -217,54 +217,38 @@ def get_matriculados(disc):
                 at.aluno.add(al)
             else: 
                 at.aluno.add(al[0])
-            
+    return all_stu
 
 #main()
 # O instituto será fornecido no futuro via inteface administrativa do django.
 # Por enquanto temos:
+def buscarDados(semestre, ano):
+  os.system("rm IC.htm*")
+  all_stu = []
 
-INSTITUTO='IC'
-ANO='2010'
-SEMESTRE='1'
-
-all_stu = []
-
-## GRAD #
-SEMGRAD = SEMESTRE
-SEMPOS = '0'
-NIVEL = 'G'
-BASE_SITE = "http://www.dac.unicamp.br/sistemas/horarios/grad/G" \
-    + SEMESTRE + "S0/"
-
-ld = get_disc_grad()
-ld = set(ld)
-ld = list(ld)
-#ld = ld[:3] # Apenas na fase de desenvolvimento
-for d in ld:
-    get_matriculados(d)
-## fim GRAD #
+  ld = get_disc_grad("http://www.dac.unicamp.br/sistemas/horarios/grad/G" + semestre + "S0/" )
+  ld = set(ld)
+  ld = list(ld)
+  #ld = ld[:3] # Apenas na fase de desenvolvimento
+  for d in ld:
+    all_stu.extend(get_matriculados(disc=d, ano=ano, semgrad=semestre, nivel='G'))
+ ## fim GRAD #
 
 
-## POS #
-SEMGRAD = '0'
-SEMPOS = SEMESTRE
-SEMPOS = '1' + SEMESTRE
-NIVEL =  'P'
-BASE_SITE = "wget http://www.dac.unicamp.br/sistemas/horarios/pos/P" \
-    + SEMESTRE + "S/"
 
-ld = get_disc_pos()
-for d in ld:
-    get_matriculados(d)
-## fim POS #   
+#  ld = get_disc_pos()
+#  for d in ld:
+#    get_matriculados(disc=d, ano=ano, sempos='1'+semestre, nivel='P', base_site="wget http://www.dac.unicamp.br/sistemas/horarios/pos/P" \
+#    + semestre + "S/"
+  ## fim POS #   
 
-f = open("alunos.passwd", 'w')
-for i in all_stu:
+  f = open("alunos.passwd", 'w')
+  for i in all_stu:
     for j in i:
         f.write(j)
         f.write(' ')
     f.write('\n')
-f.close()
+  f.close()
 
-print "Done."
+  print "Done."
 
