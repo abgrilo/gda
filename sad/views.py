@@ -56,6 +56,62 @@ def query_result(request):
         return render_to_response('sad/view_result.html', { 'professores': professores , 'disciplinas': disciplinas, 'respostas': result} )
   return render_to_response('sad/view_result.html', { 'professores': professores , 'disciplinas': disciplinas } )
 
+
+def respostas_alternativas(request):
+    professores = models.Professor.objects.all()
+    disciplinas = models.Disciplina.objects.all()
+    return render_to_response('sad/respostas_alternativas.html',             { 'professores': professores , 
+              'disciplinas': disciplinas })
+
+def format_respostas_alternativas(respostas):
+    result = []
+    anterior = respostas[0]
+    alternativas = {}
+    
+    for r in respostas:
+        if anterior.pergunta.id != r.pergunta.id:
+            atual = []
+            result.append(atual)
+            atual.append(r.pergunta.texto)
+            respostas = []
+            for i in alternativas:
+                alternativa = i+':  '+ str(alternativas[i])
+                respostas.append(alternativa)
+            alternativas = {}
+            atual.append(respostas)
+        anterior = r
+        if r.alternativa:
+            if r.alternativa.texto in alternativas:
+                alternativas[r.alternativa.texto] += 1
+            else: 
+                alternativas[r.alternativa.texto] = 1
+    return result                
+
+def query_alternativas(request):
+  professores = models.Professor.objects.all()
+  disciplinas = models.Disciplina.objects.all()
+  if request.POST:
+      professor = request.POST['professores']
+      disciplina = request.POST['disciplinas']
+      if professor and disciplina:
+        respostas = models.Resposta.objects.filter(
+                        atribuicao__disciplina__sigla=disciplina
+                    ).filter(
+                        atribuicao__professor__id=professor
+                    ).order_by(
+                        'pergunta__id'
+                    )
+        result = format_respostas_alternativas(respostas)
+        return render_to_response(
+                'sad/respostas_alternativas.html', 
+                { 'professores': professores , 
+                  'disciplinas': disciplinas, 
+                  'respostas': result } )
+  return render_to_response('sad/respostas_alternativas.html', 
+        { 'professores': professores , 
+          'disciplinas': disciplinas } )
+
+
 def show_all_answers(request, ano, semestre,disciplina):
     answers = ["Foi phoda!", "coxa!"]
     return render_to_response('sad/all_answers.html', 
@@ -216,3 +272,5 @@ def login_auth(request, a):
 def logout(request):
     auth.logout(request)
     return home(request)
+
+
