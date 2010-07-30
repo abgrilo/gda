@@ -48,8 +48,8 @@ def query_result(request):
   professores = models.Professor.objects.all()
   disciplinas = models.Disciplina.objects.all()
   if request.POST:
-      professor = request.POST['professor']
-      disciplina = request.POST['disciplina']
+      professor = request.POST['professores']
+      disciplina = request.POST['disciplinas']
       if professor and disciplina:
         respostas = models.Resposta.objects.filter(atribuicao__disciplina__sigla=disciplina, atribuicao__professor__id=professor).order_by('pergunta__id')
         result = format_respostas(respostas)
