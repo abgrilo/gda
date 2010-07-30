@@ -67,15 +67,7 @@ def add_avaliacao(request):
       dataFim = request.GET['dataFim']
       a = models.Avaliacao(semestre=semestre, dataInicio=dataInicio, dataFim=dataFim )
       a.save()
-<<<<<<< HEAD
-<<<<<<< HEAD
       return HttpResponseRedirect('/gda/admin/')
-=======
-      return render_to_response('admin/', {} )
->>>>>>> d10602634bb4d5d1d8ff25d0becbdb170134d300
-=======
-      return render_to_response('admin/', {} )
->>>>>>> d10602634bb4d5d1d8ff25d0becbdb170134d300
 
 def new_avaliacao(request):
   return render_to_response('admin/add_avaliacao.html', {} )
