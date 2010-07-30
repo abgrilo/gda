@@ -1,13 +1,13 @@
 {% extends 'sad/base.html' %}
 {% block content %}
 <form method='POST' action='/gda/view_result'>
-  <select name="professor" >
-    {% for p in professor %}
+  <select name="professores" >
+    {% for p in professores %}
       <option value="{{p.id}}"> {{p.nome}} </option>
       {% endfor %}
   </select>    
-  <select name="disciplina" >
-    {% for d in disciplina %}
+  <select name="disciplinas" >
+    {% for d in disciplinas %}
       <option value="{{d.sigla}}"> {{d.sigla}} </option>
     {% endfor %}
   </select>    
