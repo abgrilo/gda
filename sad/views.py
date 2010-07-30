@@ -175,9 +175,7 @@ def commit_answer_course(request, ano, semestre, disciplina, turma):
                 r = models.Resposta.objects.filter(pergunta = perg, 
                         atribuicao=atribuicao, hash_aluno = hash)
                 if r:
-                    print r
                     r = r[0]
-                    print r
                     r.texto = text
                     r.save()  
                 else:
