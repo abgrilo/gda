@@ -1,0 +1,33 @@
+{% extends 'admin/base_site.html' %}
+{% load i18n %}
+{% block title %}Nova avaliação | {% trans 'GDA' %}{% endblock %}
+{% block content %}
+
+<script language="javascript" src="/gda/jquery.js">
+</script>
+
+<span> Processando as diciplinas
+<div id="response">
+</div>  
+
+<script>
+  function updateResponse(){
+        $.ajax({ url: "/gda/admin/atribuicoes_incluidas", 
+           context: document.body,
+           success: function(data){
+             if(data == "OK"){
+                alert('Processo finalizado');
+              }else{
+                $('#response').html(data); 
+              }
+           }
+         }
+        ); 
+      }
+
+      setInterval('updateResponse()', 1000);
+ 
+</script>
+
+<br>&nbsp;
+{% endblock %}
