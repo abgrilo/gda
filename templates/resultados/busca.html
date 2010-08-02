@@ -1,24 +1,17 @@
-{% extends 'sad/base.html' %}
+{% extends 'sad/base_generic.html' %}
+
+{% block title %}{{ section.title }}{% endblock%}
 
 {% block content %}
+<h1>{{ section.title }}</h1>
 <ul>
-    <div class="post">
-        <div class="title">
-            <h2> Busca </h2>
-            <p><small>Informe os dados para ver os resultados de uma avaliação </small></p>
-            <br />
-         </div>
-            <form action="{% url resultados.views.busca %}" method='post'>
-            <div class="form">
-                <p>Semestre: <input type="text" name="semestre" value="{{ semestre }}">
-                <p>Professor: <input type="text" name="professor" value="{{ professor }}">
-                <p>Disciplina: <input type="text" name="disciplina" value="{{ disciplina }}">
-                <p>Turma: <input type="text" name="turma" value="{{ turma }}">
-                <p> <input type="submit" value="buscar" />
-                <form action='.' method='post'>
-           </div>
-        </div>
-   </div>
+        <form action="{% url resultados.views.busca %}" method='post'>
+        <p>Semestre: <input type="text" name="semestre" value="{{ semestre }}">
+        <p>Professor: <input type="text" name="professor" value="{{ professor }}">
+        <p>Disciplina: <input type="text" name="disciplina" value="{{ disciplina }}">
+        <p>Turma: <input type="text" name="turma" value="{{ turma }}">
+        <p> <input type="submit" value="buscar" />
+        <form action='.' method='post'>
 </ul>                
 {% endblock %}
 

@@ -21,12 +21,7 @@
 
 <!-- start menu -->
 <div id="menu">
-	<ul>
-		<li><a href="/gda/">Disciplinas a avaliar</a></li>
-		<!--<li><a href="#">Sobre</a></li> -->
-		<!--<li><a href="#">Contato</a></li> -->
-        <li><a href="/gda/logout/">Logout</a></li> <!-- css pra li 'class="current_page_item"' -->
-	</ul>
+    {% block menu %}{% endblock %}
 </div>
 <!-- end menu -->
 
@@ -45,7 +40,7 @@
     {% block footer %}
     {% endblock %}
 	<p class="legal">
-		2008 <a href="#">CACo</a>
+		2008 - 2010 <a href="#">CACo</a>
 		&nbsp;&nbsp;&bull;&nbsp;&nbsp;
 		Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>
 </div>
