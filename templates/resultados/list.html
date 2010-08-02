@@ -1,0 +1,24 @@
+{% extends "sad/base.html" %}
+
+{% block content %}
+{% for professor in professores.object_list %}
+    <li>{{ professor.nome }}</li>
+{% endfor %}    
+
+<div class="pagination">
+    <span class="step-links">
+        {% if professores.has_previous %}
+            <a href="?page={{ professores.previous_page_number }}">anterior</a>
+        {% endif %}
+
+        <span class="current">
+            Página {{ professores.number }} of {{ professores.paginator.num_pages }}.
+        </span>
+
+        {% if professores.has_next %}
+            <a href="?page={{ professores.next_page_number }}">próxima</a>
+        {% endif %}
+    </span>
+</div>    
+{% endblock %}
+

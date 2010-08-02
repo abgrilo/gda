@@ -1,0 +1,23 @@
+{% extends 'sad/base.html' %}
+{% block content %}
+
+{% if respostas %}
+    <ul>
+    {% for r in respostas %}
+        <div>
+            <li><b>{{ r.pergunta }}</b></li>
+                {% ifequal r.pergunta.tipo 'A' %}
+                    {{ r.alternativa }}
+                {% else %}
+                    {{ r.texto }}
+                {% endifequal %}
+                <br/>
+                <br/>
+        </div>
+    {% endfor %}
+    <ul>
+{% else %}   
+    <p>Não foram econtradas respostas.</p>
+{% endif %}    
+
+{% endblock %}

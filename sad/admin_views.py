@@ -33,8 +33,8 @@ def pick_respostas(request):
                 resps_modelo = bool(models.Resposta.objects.filter(atribuicao=a, modelo=True))
     return render_to_response('admin/pick_respostas.html', {
         'atrib': elegiveis,
-        'ano' : '2008',
-        'semestre' : '2'
+        'ano' : '2010',
+        'semestre' : '1'
         } )
 
 def pick_respostas_modelo(request, ano, semestre, disciplina, turma):

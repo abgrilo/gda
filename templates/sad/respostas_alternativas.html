@@ -1,6 +1,6 @@
 {% extends 'sad/base.html' %}
 {% block content %}
-<form method='POST' action='/gda/respostas_alternativas'>
+<form method='POST' action='gda/respostas_alternativas'>
   <select name="professores" >
     {% for p in professores %}
       <option value="{{p.id}}"> {{p.nome}} </option>

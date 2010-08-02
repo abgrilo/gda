@@ -60,7 +60,8 @@ def query_result(request):
 def respostas_alternativas(request):
     professores = models.Professor.objects.all()
     disciplinas = models.Disciplina.objects.all()
-    return render_to_response('sad/respostas_alternativas.html',             { 'professores': professores , 
+    return render_to_response('sad/respostas_alternativas.html',
+            { 'professores': professores , 
               'disciplinas': disciplinas })
 
 def format_respostas_alternativas(respostas):
