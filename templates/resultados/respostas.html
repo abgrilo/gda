@@ -13,8 +13,8 @@
             {% endfor %}
         {% else %}
             {% for d in p.dissertativas %}
-                {% if d.resposta %}
-                    <li> {{ d.resposta }} </li>
+                {% if d.texto %}
+                    <p> {{ d.texto }} </p>
                 {% endif %}
             {% endfor %}
         {% endif %}

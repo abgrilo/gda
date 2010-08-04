@@ -28,7 +28,6 @@ def busca(request):
     if g: # Vai pra página com as respostas da disciplina
         HttpResponseRedirect(disciplina(request))
     p = request.POST
-    print p
     # dicionário para fazer a busca
     parametros = {}.fromkeys(['semestre', 'disciplina', 'turma', 'professor'])
     for k, v in p.items():
@@ -88,10 +87,11 @@ def disciplina(request):
             else:
                 respL = []
                 for r in respostas:
+                    print r
                     if r.texto is not None:
                         respL.append({'id' : pergunta.id, 'resposta' : r.texto, })
                 pergL.append({'id' : pergunta.id, 'pergunta' : pergunta.texto, 'dissertativas' : respL,})
-                return render_to_response('resultados/respostas.html',
+        return render_to_response('resultados/respostas.html',
                                   { 'semestre': semestre ,
                                     'disciplina': disciplina,
                                     'professor': professor,
