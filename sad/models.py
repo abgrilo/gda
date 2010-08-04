@@ -56,7 +56,6 @@ class Disciplina(models.Model):
     def __unicode__(self):
         return self.sigla
 
-
 class Atribuicao(models.Model):
     disciplina = models.ForeignKey(Disciplina)
     professor = models.ForeignKey(Professor)

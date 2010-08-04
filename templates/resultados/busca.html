@@ -1,17 +1,39 @@
 {% extends 'sad/base_generic.html' %}
 
-{% block title %}{{ section.title }}{% endblock%}
-
+{% block title %}Busca disciplinas avaliadas {% endblock%}
+<!-- Busca -->
 {% block content %}
-<h1>{{ section.title }}</h1>
-<ul>
-        <form action="{% url resultados.views.busca %}" method='post'>
-        <p>Semestre: <input type="text" name="semestre" value="{{ semestre }}">
+
+<div class="search">
+    <div class="title"> <h2>Busca</h2><br /></div>
+        <form action="{% url resultados.views.busca %}" method='POST'>
+        <p>Semestre
+        <select name="semestre">
+            {% for s in semestre %}
+                <option value="{{ s.semestre }}"> {{ s.semestre }} </option>
+            {% endfor %}
+        </select>
         <p>Professor: <input type="text" name="professor" value="{{ professor }}">
         <p>Disciplina: <input type="text" name="disciplina" value="{{ disciplina }}">
         <p>Turma: <input type="text" name="turma" value="{{ turma }}">
         <p> <input type="submit" value="buscar" />
-        <form action='.' method='post'>
-</ul>                
+	</form>
+</div>                
+
+
+<!-- Resultado da busca -->
+{% if atribuicao %}
+<div class="title"> <h2>Resultados da Busca</h2><br /></div>
+<form method='GET' action='/gda/busca/respostas/'>
+    <select name="atribuicao" >
+    {% for a in atribuicao %}
+         <p><option value="{{a.id}}"> {{a.disciplina}}{{a.turma}} {{a.professor}}
+        </option>
+    {% endfor %}
+    </select>    
+    <p><input type='submit' value='Visualizar as respostas'>
+</form>
+</div>
+{% endif %}
 {% endblock %}
 

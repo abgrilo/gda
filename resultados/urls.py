@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
 
 from django.conf.urls.defaults import *
 
-from resultados.views import *
-
+from views import index, busca, disciplina
 
 urlpatterns = patterns('resultados.views',
     (r'^$', 'index'),
-    (r'^busca', 'busca'),
-    (r'^listando/$', 'listing'),
+    (r'^respostas/$', 'disciplina'),
+    (r'^lista/disciplinas/$', 'busca'),
 )

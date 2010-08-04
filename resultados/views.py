@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect
@@ -6,8 +6,6 @@ from django.shortcuts import render_to_response
 from django.db.models import Q
 
 from sad.models import *
-from resultados.forms import *
-
 
 """
     Views para consulta das respostas das avaliações.
@@ -17,57 +15,54 @@ from resultados.forms import *
 def index(request):
     """
         XXX: quando terminar de desenvolver/testar, requerer login.
-        dummy page
     """
-    return render_to_response('resultados/busca.html')
-
-    if request.POST:
-        semestre = request.POST['semestres']
-        professor = request.POST['professores']
-        disciplina = request.POST['disciplinas']
-    return HttpResponse('<html><body> Dummy, FIXME!</body></html>')
-
-def listing(request):
-    """ 
-        Lista os professores cadastrados.
-        XXX: Colocar links para as matérias lecionadas pelo professor.
-        XXX: listar por instituto quando esta tabela estiver no GDA.
-    """
-    professores_list = Professor.objects.order_by('nome')
-    paginator = Paginator(professores_list, 50, orphans=5)
-    
-    try:
-        page = int(request.GET.get('page', '1'))
-    except ValueError:
-        page = 1
-
-    try:
-        professores = paginator.page(page)
-    except (EmptyPage, InvalidPage):
-        professores = paginator.page(paginator.num_pages)
-
-    return render_to_response('resultados/list.html', {
-            "professores": professores})
+    semestres = Avaliacao.objects.all().order_by()
+    return render_to_response('resultados/busca.html', {'semestre': semestres})
 
 
 def busca(request):
     """
-        Faz uma busca genericao.
+        Faz uma busca generica.
     """
-    #return HttpResponse('<html><h1>Olá avaliação genérica</h1></html>')
-    #return disciplina(ano, semestre, disciplina, turma)
-    return disciplina('2010', '2010-01-01', 'MC548', 'A')
+    g = request.GET
+    if g: # Vai pra página com as respostas da disciplina
+        HttpResponseRedirect(disciplina(request))
+    p = request.POST
+    print p
+    # dicionário para fazer a busca
+    parametros = {}.fromkeys(['semestre', 'disciplina', 'turma', 'professor'])
+    for k, v in p.items():
+        parametros[k] = v
+    
+    # filtra os resultados por parâmetros
+    atribuicao = Atribuicao.objects.all()
+    professor = Professor.objects.all()
+    if parametros['semestre']:
+        atribuicao = atribuicao.filter(semestre__icontains=parametros['semestre'])
+    if parametros['disciplina']:
+        atribuicao = atribuicao.filter(disciplina=parametros['disciplina'])
+    if parametros['turma']:
+        atribuicao = atribuicao.filter(turma__icontains=parametros['turma'])
+    if parametros['professor']:
+        atribuicao = atribuicao.filter(professor__nome__icontains=parametros['professor'])
+    semestre = Avaliacao.objects.all().order_by()
+    return render_to_response('resultados/busca.html', {'atribuicao': atribuicao, 'semestre': semestre})
 
-def disciplina(ano, semestre, disciplina, turma):
+
+def disciplina(request):
     """
         Mostra as respostas de uma disciplina avaliada. 
     """
+    atribuicao = Atribuicao.objects.get(id=request.GET['atribuicao'])
+    ano = atribuicao.semestre
+    turma = atribuicao.turma
+    disciplina = atribuicao.disciplina
+    semestre = ano
+    professor = atribuicao.professor 
     discs = Disciplina.objects.get(sigla=disciplina)
-    #try: FIXME só pra debug
-    if True:
+    try: 
         d = discs
         perguntas = Pergunta.objects.filter(questionario=d.questionario)
-        #print perguntas[0].id
         pergL = []
         respL = []
         atribuicao = Atribuicao.objects.filter(disciplina=disciplina,
@@ -75,7 +70,6 @@ def disciplina(ano, semestre, disciplina, turma):
 
         for pergunta in perguntas:
             respostas = Resposta.objects.filter(pergunta=pergunta, atribuicao=atribuicao)
-            #print respostas[0].alternativa, respostas[1].alternativa, respostas[3].alternativa
             if not respostas:
                 respL.append('')
             elif pergunta.tipo == 'A':  # alternativa
@@ -97,14 +91,13 @@ def disciplina(ano, semestre, disciplina, turma):
                     if r.texto is not None:
                         respL.append({'id' : pergunta.id, 'resposta' : r.texto, })
                 pergL.append({'id' : pergunta.id, 'pergunta' : pergunta.texto, 'dissertativas' : respL,})
-        
-        return render_to_response('resultados/respostas.html',
-                                  { 'ano': ano , 
-                                    'semestre': semestre ,
+                return render_to_response('resultados/respostas.html',
+                                  { 'semestre': semestre ,
                                     'disciplina': disciplina,
+                                    'professor': professor,
                                     'turma': turma,
                                     'perguntas': pergL,
                                     } 
                                   )
-    #except:
-    #    return render_to_response('sad/consistency_error.html', {} )
+    except:
+        return render_to_response('sad/consistency_error.html', {} )

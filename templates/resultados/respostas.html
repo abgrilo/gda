@@ -1,28 +1,27 @@
 {% extends 'sad/base_generic.html' %}
-{% block title %}
-    {{ section.title }} Disciplina avaliada
-{% endblock %}
 {% block content %}
 <h1> {{ disciplina }}{{ turma }}
 <br />
-{{ atribuicao.professor }}</h1>
+{{ professor }}</h1>
 <h2> {{ semestre }}</h2>
 <br />
     {% for p in perguntas %}
-		<b>{{ p.pergunta }}</b><br />
+<b>{{ p.pergunta }}</b><br />
         {% if p.alternativas %}
             {% for a in p.alternativas %}
-                <li>{{ a.texto }}:  {{ a.resposta }}</li>
+                <li>{{ a.texto }}: {{ a.resposta }}</li>
             {% endfor %}
-        {% else %}    
+        {% else %}
             {% for d in p.dissertativas %}
                 {% if d.resposta %}
                     <li> {{ d.resposta }} </li>
                 {% endif %}
-            {% endfor %}    
+            {% endfor %}
         {% endif %}
         <br><br><br>
         <br>&nbsp;
     {% endfor %}
     <br>&nbsp;
 {% endblock %}
+
+
