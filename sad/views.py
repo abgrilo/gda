@@ -5,6 +5,7 @@ from django.contrib import auth
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
+from django.contrib.auth.decorators import login_required
 from sad import models
 from gdadefs import *
 from md5 import new
@@ -12,18 +13,22 @@ from md5 import new
 # FIXME: Arrumar estas variaveis globais
 ANO, SEMESTRE = '2010', '1'
 
+@login_required
 def show_all_semesters(request):
     semesters = ["Bla", "Creu", "GDA"]
     return render_to_response('sad/all_semesters.html', { 'semesters': semesters} )
 
+@login_required
 def show_all_courses(request, ano, semestre):
     return render_to_response('sad/all_courses.html', { 'ano': ano , 'semestre': semestre } )
 
+@login_required
 def view_result(request):
   professores = models.Professor.objects.all()
   disciplinas = models.Disciplina.objects.all()
   return render_to_response('sad/view_result.html', { 'professores': professores , 'disciplinas': disciplinas } )
 
+@login_required
 def format_respostas(respostas):
   result = []
   anterior = None
@@ -44,6 +49,7 @@ def format_respostas(respostas):
 
   return result
 
+@login_required
 def query_result(request):
   professores = models.Professor.objects.all()
   disciplinas = models.Disciplina.objects.all()
@@ -56,6 +62,7 @@ def query_result(request):
         return render_to_response('sad/view_result.html', { 'professores': professores , 'disciplinas': disciplinas, 'respostas': result} )
   return render_to_response('sad/view_result.html', { 'professores': professores , 'disciplinas': disciplinas } )
 
+@login_required
 def show_all_answers(request, ano, semestre,disciplina):
     answers = ["Foi phoda!", "coxa!"]
     return render_to_response('sad/all_answers.html', 
@@ -64,42 +71,40 @@ def show_all_answers(request, ano, semestre,disciplina):
                                 'answers': answers ,
                                 } 
                               )
-
+@login_required
 def all_to_answer(request, ano, semestre, respondido = False, ultima_resp = ''):
-    if request.user.is_authenticated():
-        try:
-            # procura o objeto aluno
-            aluno = models.Aluno.objects.filter(username=request.user.username)[0]
-            # pega as disciplinas desse semestre
-            atribuicaoPadrao = models.Atribuicao.objects.filter(aluno=aluno, semestre=dbSemester(semestre, ano))
-            # mostra apenas as disciplinas que ele ainda nao respondeu
-            hash = new(request.user.username).hexdigest()
-            atribuicao = []
-            atr_resp = []
-            for atr in atribuicaoPadrao:
-                # FIXME deveria ser mais limpo, um if
-                if not models.Resposta.objects.filter(hash_aluno=hash, atribuicao=atr):
-                    # remove a atribuicao ja respondida 
-                    atribuicao.append(atr)
-                else:
-                    atr_resp.append(atr)
+    try:
+        # procura o objeto aluno
+        aluno = models.Aluno.objects.filter(username=request.user.username)[0]
+        # pega as disciplinas desse semestre
+        atribuicaoPadrao = models.Atribuicao.objects.filter(aluno=aluno, semestre=dbSemester(semestre, ano))
+        # mostra apenas as disciplinas que ele ainda nao respondeu
+        hash = new(request.user.username).hexdigest()
+        atribuicao = []
+        atr_resp = []
+        for atr in atribuicaoPadrao:
+            # FIXME deveria ser mais limpo, um if
+            if not models.Resposta.objects.filter(hash_aluno=hash, atribuicao=atr):
+                # remove a atribuicao ja respondida 
+                atribuicao.append(atr)
+            else:
+                atr_resp.append(atr)
+    except:
+    # provavelmente o aluno nao esta fazendo nenhuma discplina
+        atribuicao = []
+        atr_resp = []
+    return render_to_response(
+        'sad/all_to_answer.html', { 
+            'ano': ano , 
+            'semestre': semestre ,
+            'atribuicao': atribuicao,
+            'atr_resp': atr_resp,
+            'respondido': respondido,
+            'ultima_resp' : ultima_resp,
+         }
+    )
 
-        except:
-            # provavelmente o aluno nao esta fazendo nenhuma discplina
-            atribuicao = []
-            atr_resp = []
-        return render_to_response('sad/all_to_answer.html', 
-                                  { 'ano': ano , 
-                                    'semestre': semestre ,
-                                    'atribuicao': atribuicao,
-                                    'atr_resp': atr_resp,
-                                    'respondido': respondido,
-                                    'ultima_resp' : ultima_resp,
-                                    }
-                                  )
-    else:
-        return render_to_response('sad/home.html',  {'logado': 0} )
-
+@login_required
 def answer_course(request, ano, semestre, disciplina, turma):
     discs = models.Disciplina.objects.filter(sigla=disciplina)
     try:
@@ -147,6 +152,7 @@ def answer_course(request, ano, semestre, disciplina, turma):
     except:
         return render_to_response('sad/consistency_error.html', {} )
 
+@login_required
 def commit_answer_course(request, ano, semestre, disciplina, turma):
     if request.GET:  # se houver respostas
         atribuicao = models.Atribuicao.objects.filter(disciplina=disciplina,
