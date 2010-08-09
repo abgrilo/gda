@@ -11,7 +11,7 @@ from sad.models import *
     Views para consulta das respostas das avaliações.
 """
 
-@login_required(redirect_field_name='redirect_to')
+@login_required
 def index(request):
     semestres = Avaliacao.objects.all().order_by()
     return render_to_response('resultados/busca.html', {'semestre': semestres})
@@ -45,7 +45,7 @@ def busca(request):
     semestre = Avaliacao.objects.all().order_by()
     return render_to_response('resultados/busca.html', {'atribuicao': atribuicao, 'semestre': semestre})
 
-
+@login_required
 def disciplina(request):
     """
         Mostra as respostas de uma disciplina avaliada. 
