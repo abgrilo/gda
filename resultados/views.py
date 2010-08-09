@@ -3,7 +3,7 @@
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
-from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 
 from sad.models import *
 
@@ -11,18 +11,16 @@ from sad.models import *
     Views para consulta das respostas das avaliações.
 """
 
-
+@login_required(redirect_field_name='redirect_to')
 def index(request):
-    """
-        XXX: quando terminar de desenvolver/testar, requerer login.
-    """
     semestres = Avaliacao.objects.all().order_by()
     return render_to_response('resultados/busca.html', {'semestre': semestres})
 
 
+@login_required
 def busca(request):
     """
-        Faz uma busca generica.
+        Faz uma busca generica/específica.
     """
     g = request.GET
     if g: # Vai pra página com as respostas da disciplina

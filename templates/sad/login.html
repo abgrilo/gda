@@ -1,0 +1,24 @@
+{% extends 'sad/base_generic.html' %}
+{% block content %}
+
+    {% if error %}
+    <p class="post">O usu&aacute;rio e/ou senha incorreta.</p>
+    {% endif %}
+
+    <div class="post">
+        <div class="title">
+            <h2> Login </h2>
+            <p><small>Informe seu RA e senha para ser autenticar no GDA</small></p>
+            <br />
+        </div>
+            <form action="{% url django.contrib.auth.views.login %}" method='post'> {% csrf_token %}
+                <p><label for="username">Usuário:</label>
+                <input type="text" name="username" value="" id="username"></p>
+                <p><label for="password">Senha:</label>
+                <input type="password" name="password" value="" id="password"></p>
+                <input type="submit" value="login" />
+                <input type="hidden" name="next" value="{{ next|escape }}" />
+                <form action='.' method='post'>
+        </div>
+                
+{% endblock %}

@@ -84,3 +84,5 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'caco.sad',
 )
+
+LOGIN_REDIRECT_URL = '/gda/'
