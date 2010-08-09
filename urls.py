@@ -30,9 +30,6 @@ urlpatterns = patterns('',
                        (r'^gda/admin/(.*)', admin.site.root),
 
                        (r'^gda/view_result', views.query_result),
-                       (r'^gda/respostas_alternativas', views.query_alternativas),
-                       (r'^gda/resultados_alternativas', 
-                           views.respostas_alternativas), # FIXME: link provisório
                        (r'^gda/resultados', views.view_result),
                        (r'^gda/$', views.home),
                        (r'^gda/(.*/)?auth/$', views.login_auth),
