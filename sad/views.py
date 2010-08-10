@@ -203,5 +203,6 @@ def home(request):
 def logout(request):
     auth.logout(request)
     return home(request)
+    #XXX redirecionar para uma tela informando que foi realizado o logout
 
 
