@@ -82,4 +82,4 @@ admin.site.register(Questionario, QuestionarioAdmin)
 admin.site.register(Pergunta, PerguntaAdmin)
 admin.site.register(Resposta, RespostaAdmin)
 admin.site.register(Alternativa, AlternativaAdmin)
-
+admin.site.register(Avaliacao)
