@@ -1,5 +1,9 @@
-{% extends "admin/base.html" %}
+{% extends 'admin/base_site.html' %}
+{% load i18n %}
+{% block title %}Nova avaliação | {% trans 'GDA' %}{% endblock %}
 {% block content %}
+<script language="javascript" src="/gda/jquery.js">
+</script>
 <form method='GET' action='/gda/admin/add_avaliacao/'>
   <div class="entry">
        <b>Semestre</b> <input type="text" name="semestre" />

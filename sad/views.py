@@ -116,7 +116,6 @@ def answer_course(request, ano, semestre, disciplina, turma):
         hash = new(request.user.username).hexdigest()
         atr = models.Atribuicao.objects.filter(disciplina=disciplina,
                 turma=turma, semestre=dbSemester(semestre,ano), aluno=aluno)[0]
-
         if models.Resposta.objects.filter(hash_aluno=hash, atribuicao=atr):
             return render_to_response('sad/consistency_error.html', {} )
 
@@ -158,6 +157,8 @@ def commit_answer_course(request, ano, semestre, disciplina, turma):
         atribuicao = models.Atribuicao.objects.filter(disciplina=disciplina,
                 turma=turma, semestre=dbSemester(semestre,ano))[0]
         hash = new(request.user.username).hexdigest()
+        if models.Resposta.objects.filter(hash_aluno=hash, atribuicao=atribuicao):
+          return render_to_response('sad/error.html', {'error': 'A avaliação do professor já foi enviada anteriormente'} )
         for resp in sorted(request.GET):
             if resp.startswith('pa'):  # alternativas
                 p_id = resp.replace('pa','')

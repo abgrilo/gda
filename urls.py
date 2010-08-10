@@ -24,8 +24,9 @@ urlpatterns = patterns('',
                        (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/(?P<ano>\d+)[sS](?P<semestre>\d)/(?P<disciplina>[A-Z][A-Z]\d+)(?P<turma>[A-Z1-9#])/$', admin_views.pick_respostas_modelo),
                        (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/', admin_views.pick_respostas),
                        (r'^gda/admin/alternative/pick_respostas/', admin_views.pick_respostas),
-                       (r'^gda/admin/new_avaliacao/', admin_views.new_avaliacao),
+                       (r'^gda/admin/new_avaliacao', admin_views.new_avaliacao),
                        (r'^gda/admin/add_avaliacao/', admin_views.add_avaliacao),
+                       (r'^gda/admin/atribuicoes_incluidas', admin_views.disciplinas_processadas),
                        # Uncomment the next line to enable the admin:
                        (r'^gda/admin/(.*)', admin.site.root),
                        (r'^gda/view_result', views.query_result),
@@ -42,5 +43,6 @@ urlpatterns = patterns('',
                        (r'^(.*/)?(?P<path>.*\.css)$', 'django.views.static.serve', {'document_root': os.path.join(PROJECT_ROOT_PATH,'templates/css') }),
                        (r'^(.*/)?(?P<path>.*\.(jpg|png|gif))$', 'django.views.static.serve', {'document_root': os.path.join(PROJECT_ROOT_PATH,'templates/img') }),
                        (r'^gda/busca/', include('resultados.urls')),
+                       (r'^gda/(.*/)?(?P<path>.*\.js)$', 'django.views.static.serve', {'document_root': os.path.join(PROJECT_ROOT_PATH,'templates/script') }),
                        )
 

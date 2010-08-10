@@ -30,7 +30,8 @@ DRE_HOR_POS_DETAIL = '<font size=-1>(?P<disc_id>[A-Z][A-Z ][0-9]{3,3})(?P<disc_n
 DRE_EMAIL = '^[A-Za-z]'
 INSTITUTO='IC'
 
-
+disciplinas = []
+finalizado = [False]
 
 def iconv_file(file, name):
 
@@ -52,14 +53,15 @@ def get_site(base, file):
     # FIXME: Fiz uma pequena gambiarra para pode pegar os dados em utf-8
     # Troquei o código abaixo pelo wget da página e um iconv
     #return urllib2.urlopen(base + file).read().encode('iso8859-1').decode('utf-8')
-    os.system("wget " + base + file + " 2&> /dev/null")
-    os.system("iconv -f iso8859-1 -t utf-8 " + file + " > " + file + ".utf8")
-    f = open(file + ".utf8")
+    site = urllib2.urlopen(base + file).read()
+    f = open(".site", 'w')
+    f.write(site)
+    f.close()
+    
+    os.system("iconv -f iso8859-1 -t utf-8 .site > .site.utf8")
+    f = open(".site.utf8")
     site = f.read()
     f.close()
-   # os.remove(file + ".utf8")
-   # os.remove(file)
-    print site
     return site
 
 
@@ -116,6 +118,11 @@ def get_disc_pos(getbase):
     return r
 
 
+def get_finalizado():
+  return finalizado[0]
+
+def set_finalizado(fin):
+    finalizado[0] = fin
 # dada uma disciplina, get_matriculados descobre quais as turmas existentes e
 # a partir desses dados descobre todos os dados sobre cada turma (alunos,
 # matriculados e professor)
@@ -154,6 +161,8 @@ def get_matriculados(disc, ano, nivel, semgrad='0', sempos='0'):
             continue
 
         print "Processando %s%s" % (disc, t)
+        
+        disciplinas.append(disc + t)
 
         # salva o arquivo com os dados da turma,
         # faz um iconv e abre de novo
@@ -223,6 +232,8 @@ def get_matriculados(disc, ano, nivel, semgrad='0', sempos='0'):
 # O instituto será fornecido no futuro via inteface administrativa do django.
 # Por enquanto temos:
 def buscarDados(semestre, ano):
+  disciplinas = []
+  set_finalizado(False)
   os.system("rm IC.htm*")
   all_stu = []
 
@@ -249,6 +260,6 @@ def buscarDados(semestre, ano):
         f.write(' ')
     f.write('\n')
   f.close()
-
+  set_finalizado(True)
   print "Done."
 

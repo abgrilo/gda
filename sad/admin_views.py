@@ -7,7 +7,7 @@ from django.shortcuts import render_to_response
 from django.contrib.admin.views.decorators import staff_member_required
 from sad import models
 from sad import parser_DAC
-
+import thread
 def pick_respostas(request):
     elegiveis = []
     ultima_atribuicao = None
@@ -59,15 +59,24 @@ def pick_respostas_modelo(request, ano, semestre, disciplina, turma):
         'data' : form,
         } )
 
+def disciplinas_processadas(request):
+  if parser_DAC.get_finalizado():
+      return render_to_response('admin/OK.html', {})
+  disciplinas = parser_DAC.disciplinas
+  print len(disciplinas)
+  return render_to_response('admin/disciplinas.html', \
+                            {'disciplinas': disciplinas} )
+
 def add_avaliacao(request):
   if request.GET:
-      parser_DAC.buscarDados(request.GET['semestre'], request.GET['ano'])
-      semestre = request.GET['ano'] + '-' + '0' + request.GET['semestre'] + '-01'
-      dataInicio = request.GET['dataInicio']
-      dataFim = request.GET['dataFim']
-      a = models.Avaliacao(semestre=semestre, dataInicio=dataInicio, dataFim=dataFim )
-      a.save()
-      return HttpResponseRedirect('/gda/admin/')
+      request.session['disciplinas'] = ['a', 'b']
+      thread.start_new_thread(parser_DAC.buscarDados, (request.GET['semestre'], request.GET['ano']))
+#      semestre = request.GET['ano'] + '-' + '0' + request.GET['semestre'] + '-01'
+#      dataInicio = request.GET['dataInicio']
+#      dataFim = request.GET['dataFim']
+#      a = models.Avaliacao(semestre=semestre, dataInicio=dataInicio, dataFim=dataFim )
+#      a.save()
+      return render_to_response('admin/parsing.html', {} )
 
 def new_avaliacao(request):
   return render_to_response('admin/add_avaliacao.html', {} )
