@@ -200,27 +200,9 @@ def home(request):
     else:
         return render_to_response('sad/home.html', {'error' : False,})
         
-
-def login_auth(request, a):
-    try:
-        #if request.user.is_
-        username = request.POST['username']
-        password = request.POST['password']
-        user = auth.authenticate(username=username, password=password)
-        if user is not None and user.is_active:
-            # Correct password, and the user is marked "active"
-            auth.login(request, user)
-            # Redirect to a success page.
-            #FIXME gambiarra
-            return all_to_answer(request, ANO, SEMESTRE)
-        else:
-            # Show same error as an exception
-            raise
-    except:
-        return render_to_response('sad/home.html', {'error' : True,})
-
 def logout(request):
     auth.logout(request)
     return home(request)
+    #XXX redirecionar para uma tela informando que foi realizado o logout
 
 
