@@ -10,7 +10,7 @@
 				<b>{{ p.pergunta }}</b><br />
                 {% if p.alternativas %}
                     {% for a in p.alternativas %}
-                        <input type='radio' name='pa{{ p.id }}' value='{{ a.id }}'> {{ a.texto }}
+                        <input type='radio' name='pa{{ p.id }}' value='{{ a.id }}' {{a.checked}}> {{ a.texto }}
                     {% endfor %}
                     <br />
                     <br />
@@ -19,7 +19,7 @@
 
                 {% endif %}
 
-                <textarea cols='40' rows='3' name='pd{{ p.id }}'></textarea>
+                <textarea cols='40' rows='3' name='pd{{ p.id }}'>{{p.texto}}</textarea>
                 <br>&nbsp;
                 <p class="post"></p>
         </div>

@@ -80,7 +80,6 @@ class Pergunta(models.Model):
     def __unicode__(self):
         return self.texto
 
-
 class Alternativa(models.Model):
     texto = models.CharField(max_length=512)
     pergunta = models.ForeignKey(Pergunta)
@@ -100,4 +99,5 @@ class Resposta(models.Model):
 
     def __unicode__(self):
         return self.texto
-
+    
+        
