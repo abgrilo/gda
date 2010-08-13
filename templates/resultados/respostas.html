@@ -5,23 +5,48 @@
 {{ professor }}</h1>
 <h2> {{ semestre }}</h2>
 <br />
-    {% for p in perguntas %}
-<b>{{ p.pergunta }}</b><br />
-        {% if p.alternativas %}
+<br />
+<br />
+<a> Nº de questionários respondidos: {{max_value}}</a><br /><br />
+{% for p in perguntas %}
+<div class="post">
+    <b>{{ p.pergunta }}</b><br /><br /> 
+    {% if p.alternativas %}
+            <ul>
+            <div id="graficos">
+            <table width="500">
             {% for a in p.alternativas %}
-                <li>{{ a.texto }}: {{ a.resposta }}</li>
+                <tr> 
+                    <td width="100">
+                        {{a.texto}}
+                    </td>
+                    <td>
+                        <a class="bar" style="width: {{a.resposta}}%;">{{a.resposta}}% </a>
+                    </td>    
+                </tr>
             {% endfor %}
-        {% else %}
-            {% for d in p.dissertativas %}
-                {% if d.texto %}
-                    <p> {{ d.texto }} </p>
+            </table>
+            </div> 
+            </ul>
+            <b>Comentários:</b><br /><br />
+            {% for c in p.comentarios %}
+                {% if c.texto %}
+                    <li>{{c.texto}}</li>
                 {% endif %}
             {% endfor %}
-        {% endif %}
-        <br><br><br>
-        <br>&nbsp;
-    {% endfor %}
-    <br>&nbsp;
+            <br />
+    {% else %}
+            <b> Respostas: </b><br /><br />
+            {% for d in p.dissertativas %}
+                {% if d.texto %}
+                    <li> {{ d.texto }} </li>
+                {% endif %}
+            {% endfor %}
+            <br /><br />
+    {% endif %}
+</div>
+{% endfor %}
 {% endblock %}
+
 
 

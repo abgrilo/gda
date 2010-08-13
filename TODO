@@ -5,9 +5,6 @@ General:
 
 * Juntar todos os scripts de manipulação num só pra organizar melhorar a administração do gda
 
-* Arrumar o problema com os a primeira letra do nome acentuada no parser-DAC.py [Ok]
-
-
 Features:
 * Suporte para disciplina com dois ou mais professores.
 
@@ -43,12 +40,6 @@ em relação ao total)
 
 * [HIGH] mostrar mensangens dizendo que o GDA é experimental e se o aluno
 clicar em Enviar não poderá responder de novo o questionário.
-
-* [HIGH] implementar suporte para recuperar as respostas do aluno para que
-ele possa continuar as responder depois. (implementado no views, falta fazer 
-a parte do template, o template recebe uma lista com a resposta de cada pergunta,
-mesmo se está em branco. As respostas em branco são passados pois não teriamos como saber
-a ordem certa das respostas)
 
 Interface administrativa:
 

@@ -4,6 +4,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
+from django.db.models import Avg
 
 from sad.models import *
 
@@ -57,7 +58,7 @@ def disciplina(request):
     semestre = ano
     professor = atribuicao.professor 
     discs = Disciplina.objects.get(sigla=disciplina)
-    try: 
+    if True: #FIXME DEBUG try: 
         d = discs
         perguntas = Pergunta.objects.filter(questionario=d.questionario)
         pergL = []
@@ -67,6 +68,7 @@ def disciplina(request):
 
         for pergunta in perguntas:
             respostas = Resposta.objects.filter(pergunta=pergunta, atribuicao=atribuicao)
+            n_respostas = respostas.count()
             if not respostas:
                 respL.append('')
             elif pergunta.tipo == 'A':  # alternativa
@@ -79,23 +81,32 @@ def disciplina(request):
                 respL = []
                 for a in alters:
                     r = respostas.filter(alternativa=a.id)
-                    respL.append({'id': a.id, 'quantidade': r.count()})
-                    alterL.append({'id' : a.id, 'texto' : a.texto, 'resposta': r.count()})
-                pergL.append({'id' : pergunta.id, 'pergunta' : pergunta.texto, 'alternativas' : alterL,})
+                    alterL.append({
+                        'id' : a.id, 
+                        'texto' : a.texto, 
+                        'resposta': r.count()*100/n_respostas,
+                    })
+                pergL.append({
+                    'id' : pergunta.id, 
+                    'pergunta': pergunta.texto, 
+                    'alternativas': alterL,
+                    'comentarios': respostas,
+                })
             else:
                 respL = []
                 for r in respostas:
-                    print r
                     if r.texto is not None:
-                        respL.append({'id' : pergunta.id, 'resposta' : r.texto, })
+                        respL.append({'id' : pergunta.id, })
                 pergL.append({'id' : pergunta.id, 'pergunta' : pergunta.texto, 'dissertativas' : respL,})
-        return render_to_response('resultados/respostas.html',
-                                  { 'semestre': semestre ,
-                                    'disciplina': disciplina,
-                                    'professor': professor,
-                                    'turma': turma,
-                                    'perguntas': pergL,
-                                    } 
-                                  )
-    except:
+        return render_to_response(
+            'resultados/respostas.html', {
+                'semestre': semestre ,
+                'disciplina': disciplina,
+                'professor': professor,
+                'turma': turma,
+                'perguntas': pergL,
+                'max_value': n_respostas,
+             } 
+        )
+    else: #FIXME debug except:
         return render_to_response('sad/consistency_error.html', {} )
