@@ -4,7 +4,6 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg
 
 from sad.models import *
 
@@ -58,7 +57,7 @@ def disciplina(request):
     semestre = ano
     professor = atribuicao.professor 
     discs = Disciplina.objects.get(sigla=disciplina)
-    if True: #FIXME DEBUG try: 
+    try: 
         d = discs
         perguntas = Pergunta.objects.filter(questionario=d.questionario)
         pergL = []
@@ -96,7 +95,7 @@ def disciplina(request):
                 respL = []
                 for r in respostas:
                     if r.texto is not None:
-                        respL.append({'id' : pergunta.id, })
+                        respL.append({'id' : pergunta.id, 'resposta': r.texto})
                 pergL.append({'id' : pergunta.id, 'pergunta' : pergunta.texto, 'dissertativas' : respL,})
         return render_to_response(
             'resultados/respostas.html', {
@@ -108,5 +107,5 @@ def disciplina(request):
                 'max_value': n_respostas,
              } 
         )
-    else: #FIXME debug except:
+    except:
         return render_to_response('sad/consistency_error.html', {} )
