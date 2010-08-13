@@ -110,7 +110,7 @@ def all_to_answer(request, ano, semestre, respondido = False, ultima_resp = ''):
 @login_required
 def answer_course(request, ano, semestre, disciplina, turma):
     discs = models.Disciplina.objects.filter(sigla=disciplina)
-    if True: #try:
+    try:
         aluno = models.Aluno.objects.filter(username=request.user.username)[0]
         d = discs[0]  # sera lidado uma disciplina por vez no questionario
         pergs = models.Pergunta.objects.filter(questionario=d.questionario)
@@ -160,7 +160,7 @@ def answer_course(request, ano, semestre, disciplina, turma):
                                     'atribuicao' : atr,
                                     } 
                                   )
-    else: #except:
+    except:
         return render_to_response('sad/consistency_error.html', {} )
 
 @login_required
