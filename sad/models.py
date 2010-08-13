@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -32,6 +34,9 @@ class Professor(models.Model):
     def __unicode__(self):
         return self.nome
 
+    class Meta:
+        verbose_name_plural = 'professores'
+
 class Avaliacao(models.Model):
     nome = models.CharField(max_length=128)
     semestre = models.CharField(max_length=1)
@@ -41,7 +46,10 @@ class Avaliacao(models.Model):
 
     def __unicode__(self):
         return self.nome
-
+    
+    class Meta:
+        verbose_name = 'avaliação'
+        verbose_name_plural = 'avaliações'
 
 class Questionario(models.Model):
     tipo = models.CharField(max_length=128)
@@ -51,6 +59,8 @@ class Questionario(models.Model):
     def __unicode__(self):
         return self.tipo
 
+    class Meta:
+        verbose_name = 'questionário'
 
 class Disciplina(models.Model):
     sigla = models.CharField(max_length=6, primary_key=True)
@@ -72,6 +82,9 @@ class Atribuicao(models.Model):
     def __unicode__(self):
         return self.disciplina.sigla + self.turma
 
+    class Meta:
+        verbose_name = 'atribuição'
+        verbose_name_plural = 'atribuições'
 
 class Pergunta(models.Model):
     TIPO_CH = (
