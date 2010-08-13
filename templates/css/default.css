@@ -414,3 +414,13 @@ img.left {
 	color: #FFFFFF;
 }
 
+#graficos a.bar {
+	background-color:#E8922B;
+	color:#FFFFFF;
+	display:block;
+	min-width:20px;
+}
+
+
+
+
