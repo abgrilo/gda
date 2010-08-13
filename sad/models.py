@@ -33,9 +33,14 @@ class Professor(models.Model):
         return self.nome
 
 class Avaliacao(models.Model):
-    semestre = models.DateField()
-    dataInicio = models.DateField()
-    dataFim = models.DateField()
+    nome = models.CharField(max_length=128)
+    semestre = models.CharField(max_length=1)
+    data_inicio = models.DateField()
+    data_fim = models.DateField()
+    libera_consultas = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return self.nome
 
 
 class Questionario(models.Model):
