@@ -1,21 +1,10 @@
 {% extends "admin/base.html" %}
 {% load i18n %}
 
-{% block title %}{{ title }} | {% trans 'GDA' %}{% endblock %}
+{% block title %}{{ title }} | {% trans 'Django site admin' %}{% endblock %}
 
 {% block branding %}
-<h1 id="site-name">{% trans 'GDA Admin' %}</h1>
+<h1 id="site-name">{% trans 'Django administration' %}</h1>
 {% endblock %}
 
-<!-- start menu -->
-{% if user.is_authenticated and user.is_staff %}
-<div id="menu">
-	<ul>
-		<li><a href="/gda/admin/new_avaliacao">Adicionar avaliação</a></li>
-		<!--<li><a href="#">Sobre</a></li> -->
-		<!--<li><a href="#">Contato</a></li> -->
-        <li><a href="/gda/logout/">Logout</a></li> <!-- css pra li 'class="current_page_item"' -->
-	</ul>
-</div>
-{% endif %}
 {% block nav-global %}{% endblock %}

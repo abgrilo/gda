@@ -38,14 +38,25 @@ class Professor(models.Model):
         verbose_name_plural = 'professores'
 
 class Avaliacao(models.Model):
-    nome = models.CharField(max_length=128)
-    semestre = models.CharField(max_length=1)
+    nome = models.CharField(
+        max_length=128, 
+        help_text="Por exemplo: Avaliação Discente do IC."
+    )
+    SEMESTRE_CHOICES = (
+        ('1', '1º Semestre'),
+        ('2', '2º Semestre'),
+    )
+    ano = models.CharField(max_length=4)
+    semestre = models.CharField(max_length=1, choices=SEMESTRE_CHOICES)
     data_inicio = models.DateField()
     data_fim = models.DateField()
-    libera_consultas = models.BooleanField(default=False)
+    liberar_consultas = models.BooleanField(
+        default=False,
+        help_text="Atenção: libere as consultas somente após finalizar a avaliação."
+    )
 
     def __unicode__(self):
-        return self.nome
+        return self.nome + ' ' + self.ano + 'S' + self.semestre
     
     class Meta:
         verbose_name = 'avaliação'
@@ -55,6 +66,7 @@ class Questionario(models.Model):
     tipo = models.CharField(max_length=128)
     texto = models.CharField(max_length=1024, blank = True)
     semestre = models.DateField()
+    avaliacao = models.ForeignKey(Avaliacao)
 
     def __unicode__(self):
         return self.tipo

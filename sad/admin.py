@@ -1,5 +1,49 @@
+# -*- coding: utf-8 -*-
 from sad.models import *
 from django.contrib import admin
+from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
+
+
+class QuestionarioInline(admin.TabularInline):
+    model = Questionario
+
+class AvaliacaoAdmin(admin.ModelAdmin):
+    list_display = ['nome', 'ano', 'semestre', 'data_inicio', 'data_fim', 'liberar_consultas']
+    search_fields = ['nome']
+    ordering = ['data_inicio']
+    inlines = [QuestionarioInline]
+
+    def response_add(self, request, obj, post_url_continue='../%s/'):
+        """ 
+            Determina o HttpResponse para add_avaliacao. 
+            Este código é uma personalização de um trecho de código do django
+            /django/contrib/admin/options.py 
+        """
+        opts = obj._meta
+        pk_value = obj._get_pk_val()
+
+        msg = "Avaliação adicionada com sucesso."
+        # Here, we distinguish between different save types by checking for
+        # the presence of keys in request.POST.
+        if request.POST.has_key("_continue"):
+            self.message_user(request, msg + ' ' + _("You may edit it again below."))
+            if request.POST.has_key("_popup"):
+                post_url_continue += "?_popup=1"
+            return HttpResponseRedirect(post_url_continue % pk_value)
+
+        if request.POST.has_key("_popup"):
+            return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script>' % \
+                # escape() calls force_unicode.
+                (escape(pk_value), escape(obj)))
+        elif request.POST.has_key("_addanother"):
+            self.message_user(request, msg + ' ' + (_("You may add another %s below.") % force_unicode(opts.verbose_name)))
+            return HttpResponseRedirect(request.path)
+        else:
+            self.message_user(request, msg)
+            return HttpResponseRedirect(reverse("admin:sad_avaliacao_changelist"))
+        
+
 
 class ProfessorAdmin(admin.ModelAdmin):
     list_display = ('nome',)
@@ -82,4 +126,4 @@ admin.site.register(Questionario, QuestionarioAdmin)
 admin.site.register(Pergunta, PerguntaAdmin)
 admin.site.register(Resposta, RespostaAdmin)
 admin.site.register(Alternativa, AlternativaAdmin)
-admin.site.register(Avaliacao)
+admin.site.register(Avaliacao, AvaliacaoAdmin)

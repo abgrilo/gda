@@ -11,6 +11,7 @@ import os
 PROJECT_ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 urlpatterns = patterns('',
+         
                        # Example:
                            # (r'^caco/', include('caco.foo.urls')),
                        
@@ -25,10 +26,12 @@ urlpatterns = patterns('',
                        (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/', admin_views.pick_respostas),
                        (r'^gda/admin/alternative/pick_respostas/', admin_views.pick_respostas),
                        (r'^gda/admin/new_avaliacao', admin_views.new_avaliacao),
-                       (r'^gda/admin/add_avaliacao/', admin_views.add_avaliacao),
+                       #(r'^gda/admin/add_avaliacao/', admin_views.add_avaliacao),
                        (r'^gda/admin/atribuicoes_incluidas', admin_views.disciplinas_processadas),
                        # Uncomment the next line to enable the admin:
-                       (r'^gda/admin/(.*)', admin.site.root),
+                        #(r'^gda/admin/sad/avaliacao/add/$', admin_views.add_avaliacao),
+                        #(r'^gda/admin/sad/avaliacao$', include(admin.site.urls)),
+                       (r'^gda/admin/', include(admin.site.urls)),
                        (r'^gda/view_result', views.query_result),
                        (r'^gda/resultados', views.view_result),
                        (r'^gda/$', views.home),

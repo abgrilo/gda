@@ -67,7 +67,7 @@ def disciplinas_processadas(request):
   return render_to_response('admin/disciplinas.html', \
                             {'disciplinas': disciplinas} )
 
-def add_avaliacao(request):
+def add_avaliacaoFIXME(request):
   if request.GET:
       request.session['disciplinas'] = ['a', 'b']
       thread.start_new_thread(parser_DAC.buscarDados, (request.GET['semestre'], request.GET['ano']))
@@ -97,6 +97,13 @@ def pick_respostas_modelo_commit(request, ano, semestre, disciplina, turma):
         'disc' : disciplina,
         'professor' : a.professor.nome,
         } )
+
+def add_avaliacao1(request):
+    print 'oi'
+    print request.POST
+    return render_to_response(
+        'admin/sad/avaliacao/change_form.html',
+    )
 
 # only staff will be able to view this views
 pick_respostas = staff_member_required(pick_respostas)
