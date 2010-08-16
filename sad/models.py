@@ -1,5 +1,9 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from django.contrib.auth.models import User
+from django.shortcuts import render_to_response
+from django.http import HttpResponse
 
 '''
     1. Botar pra funcionar depois a objetos Curso e Instituto!
@@ -32,20 +36,47 @@ class Professor(models.Model):
     def __unicode__(self):
         return self.nome
 
+    class Meta:
+        verbose_name_plural = 'professores'
+
 class Avaliacao(models.Model):
-    semestre = models.DateField()
-    dataInicio = models.DateField()
-    dataFim = models.DateField()
+    nome = models.CharField(
+        max_length=128, 
+        help_text="Por exemplo: Avaliação Discente do IC."
+    )
+    SEMESTRE_CHOICES = (
+        ('1', '1º Semestre'),
+        ('2', '2º Semestre'),
+    )
+    ano = models.CharField(
+        max_length=4,
+        help_text="Ano do semestre avaliado."
+    )
+    semestre = models.CharField(max_length=1, choices=SEMESTRE_CHOICES)
+    data_inicio = models.DateField()
+    data_fim = models.DateField()
+    liberar_consultas = models.BooleanField(
+        default=False,
+        help_text="Atenção: libere as consultas somente após finalizar a avaliação."
+    )
 
-
+    def __unicode__(self):
+        return self.ano + 'S' + self.semestre
+    
+    class Meta:
+        verbose_name = 'avaliação'
+        verbose_name_plural = 'avaliações'
+            
 class Questionario(models.Model):
     tipo = models.CharField(max_length=128)
     texto = models.CharField(max_length=1024, blank = True)
-    semestre = models.DateField()
+    avaliacao = models.ForeignKey(Avaliacao)
 
     def __unicode__(self):
         return self.tipo
 
+    class Meta:
+        verbose_name = 'questionário'
 
 class Disciplina(models.Model):
     sigla = models.CharField(max_length=6, primary_key=True)
@@ -57,16 +88,19 @@ class Disciplina(models.Model):
         return self.sigla
 
 class Atribuicao(models.Model):
+    avaliacao = models.ForeignKey(Avaliacao)
     disciplina = models.ForeignKey(Disciplina)
     professor = models.ForeignKey(Professor)
     turma = models.CharField(max_length=1)
     aluno = models.ManyToManyField(Aluno)
     # FIXME: configurar atribuicao default para o semestre corrente.
-    semestre = models.DateField()
 
     def __unicode__(self):
         return self.disciplina.sigla + self.turma
 
+    class Meta:
+        verbose_name = 'atribuição'
+        verbose_name_plural = 'atribuições'
 
 class Pergunta(models.Model):
     TIPO_CH = (

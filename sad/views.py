@@ -12,9 +12,6 @@ from md5 import new
 from forms import PerguntaForm
 from django.db.models import F
 
-# FIXME: Arrumar estas variaveis globais
-ANO, SEMESTRE = '2010', '1'
-
 @login_required
 def show_all_semesters(request):
     semesters = ["Bla", "Creu", "GDA"]
@@ -23,46 +20,6 @@ def show_all_semesters(request):
 @login_required
 def show_all_courses(request, ano, semestre):
     return render_to_response('sad/all_courses.html', { 'ano': ano , 'semestre': semestre } )
-
-@login_required
-def view_result(request):
-  professores = models.Professor.objects.all()
-  disciplinas = models.Disciplina.objects.all()
-  return render_to_response('sad/view_result.html', { 'professores': professores , 'disciplinas': disciplinas } )
-
-@login_required
-def format_respostas(respostas):
-  result = []
-  anterior = None
-  for r in respostas:
-    if anterior == None or anterior.pergunta.id != r.pergunta.id:
-      atual = []
-      result.append(atual)
-      atual.append(r.pergunta.texto)
-      respostas = []
-      atual.append(respostas)
-    anterior = r
-    if r.pergunta.tipo == 'A':
-      if r.alternativa:
-        respostas.append(r.alternativa.texto)
-    else:
-      if r.texto:
-        respostas.append(r.texto)
-
-  return result
-
-@login_required
-def query_result(request):
-  professores = models.Professor.objects.all()
-  disciplinas = models.Disciplina.objects.all()
-  if request.POST:
-      professor = request.POST['professores']
-      disciplina = request.POST['disciplinas']
-      if professor and disciplina:
-        respostas = models.Resposta.objects.filter(atribuicao__disciplina__sigla=disciplina, atribuicao__professor__id=professor).order_by('pergunta__id')
-        result = format_respostas(respostas)
-        return render_to_response('sad/view_result.html', { 'professores': professores , 'disciplinas': disciplinas, 'respostas': result} )
-  return render_to_response('sad/view_result.html', { 'professores': professores , 'disciplinas': disciplinas } )
 
 @login_required
 def show_all_answers(request, ano, semestre,disciplina):
@@ -75,11 +32,12 @@ def show_all_answers(request, ano, semestre,disciplina):
                               )
 @login_required
 def all_to_answer(request, ano, semestre, respondido = False, ultima_resp = ''):
+    avaliacao = models.Avaliacao.objects.get(ano=ano, semestre=semestre)
     try:
         # procura o objeto aluno
         aluno = models.Aluno.objects.filter(username=request.user.username)[0]
         # pega as disciplinas desse semestre
-        atribuicaoPadrao = models.Atribuicao.objects.filter(aluno=aluno, semestre=dbSemester(semestre, ano))
+        atribuicaoPadrao = models.Atribuicao.objects.filter(aluno=aluno, avaliacao=avaliacao)
         # mostra apenas as disciplinas que ele ainda nao respondeu
         hash = new(request.user.username).hexdigest()
         atribuicao = []
@@ -97,8 +55,8 @@ def all_to_answer(request, ano, semestre, respondido = False, ultima_resp = ''):
         atr_resp = []
     return render_to_response(
         'sad/all_to_answer.html', { 
-            'ano': ano , 
-            'semestre': semestre ,
+            'ano': ano,
+            'semestre': semestre,
             'atribuicao': atribuicao,
             'atr_resp': atr_resp,
             'respondido': respondido,
@@ -111,6 +69,7 @@ def all_to_answer(request, ano, semestre, respondido = False, ultima_resp = ''):
 def answer_course(request, ano, semestre, disciplina, turma):
     discs = models.Disciplina.objects.filter(sigla=disciplina)
     try:
+        avaliacao = models.Avaliacao.objects.get(ano=ano, semestre=semestre)
         aluno = models.Aluno.objects.filter(username=request.user.username)[0]
         d = discs[0]  # sera lidado uma disciplina por vez no questionario
         pergs = models.Pergunta.objects.filter(questionario=d.questionario)
@@ -118,7 +77,7 @@ def answer_course(request, ano, semestre, disciplina, turma):
         respL = []
         hash = new(request.user.username).hexdigest()
         atr = models.Atribuicao.objects.filter(disciplina=disciplina,
-                turma=turma, semestre=dbSemester(semestre,ano), aluno=aluno)[0]
+                turma=turma, avaliacao=avaliacao, aluno=aluno)[0]
         for p in pergs:
             try:
                 r = models.Resposta.objects.get(pergunta=p, hash_aluno=hash, atribuicao=atr)
@@ -166,8 +125,11 @@ def answer_course(request, ano, semestre, disciplina, turma):
 @login_required
 def commit_answer_course(request, ano, semestre, disciplina, turma):
     if request.GET:  # se houver respostas
-        atribuicao = models.Atribuicao.objects.filter(disciplina=disciplina,
-                turma=turma, semestre=dbSemester(semestre,ano))[0]
+        avaliacao = models.Avaliacao.objects.get(ano=ano, semestre=semestre)
+        atribuicao = models.Atribuicao.objects.get(
+            avaliacao=avaliacao,
+            disciplina=disciplina,
+            turma=turma)
         hash = new(request.user.username).hexdigest()
         for resp in sorted(request.GET):
             if resp.startswith('pa'):  # alternativas
@@ -214,12 +176,11 @@ def commit_answer_course(request, ano, semestre, disciplina, turma):
     else:
         return render_to_response('sad/consistency_error.html', {} )
 
-
-
 def home(request):
     if request.user.is_authenticated():
         # proceed if already authenticated
-        return all_to_answer(request, ANO, SEMESTRE) 
+        avaliacao = models.Avaliacao.objects.get(ano='2010', semestre='1')
+        return all_to_answer(request, avaliacao.ano, avaliacao.semestre) 
     else:
         return render_to_response('sad/home.html', {'error' : False,})
         

@@ -8,6 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from sad import models
 from sad import parser_DAC
 import thread
+
 def pick_respostas(request):
     elegiveis = []
     ultima_atribuicao = None
@@ -68,18 +69,23 @@ def disciplinas_processadas(request):
                             {'disciplinas': disciplinas} )
 
 def add_avaliacao(request):
-  if request.GET:
-      request.session['disciplinas'] = ['a', 'b']
-      thread.start_new_thread(parser_DAC.buscarDados, (request.GET['semestre'], request.GET['ano']))
+    if request.GET:
+        request.session['disciplinas'] = ['a', 'b']
+        avaliacao = models.Avaliacao.objects.get(
+        semestre=request.GET['semestre'], 
+        ano=request.GET['ano'])
+        thread.start_new_thread(parser_DAC.buscarDados, (avaliacao.id,))
 #      semestre = request.GET['ano'] + '-' + '0' + request.GET['semestre'] + '-01'
 #      dataInicio = request.GET['dataInicio']
 #      dataFim = request.GET['dataFim']
 #      a = models.Avaliacao(semestre=semestre, dataInicio=dataInicio, dataFim=dataFim )
 #      a.save()
-      return render_to_response('admin/parsing.html', {} )
+        return render_to_response('admin/parsing.html', {} )
 
 def new_avaliacao(request):
   return render_to_response('admin/add_avaliacao.html', {} )
+
+
 
 def pick_respostas_modelo_commit(request, ano, semestre, disciplina, turma):
     if request.POST:  # se houver respostas

@@ -9,7 +9,7 @@
     Disciplinas já respondidas: 
     <ul>
         {% for d in atr_resp %}
-            <li><a href="/gda/IC/{{ano}}s{{semestre}}/{{d}}{{turma}}/answer/">{{ d }}{{ turma }}</a></li>
+            <li><a href="/gda/IC/{{ano}}S{{semestre}}/{{d}}{{turma}}/answer/">{{ d }}{{ turma }}</a></li>
         {% endfor %}
     </ul>
 	{% endif %}
@@ -24,7 +24,7 @@
     Disciplinas não repondidas:
     <ul>
         {% for d  in atribuicao %}
-            <li><a href="/gda/IC/{{ano}}s{{semestre}}/{{d}}{{turma}}/answer/">{{ d }}{{ turma }}</a></li>
+            <li><a href="/gda/IC/{{ano}}S{{semestre}}/{{d}}{{turma}}/answer/">{{ d }}{{ turma }}</a></li>
         {% endfor %}
     </ul>
 {% else %}

@@ -11,6 +11,7 @@ import os
 PROJECT_ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 urlpatterns = patterns('',
+         
                        # Example:
                            # (r'^caco/', include('caco.foo.urls')),
                        
@@ -19,18 +20,6 @@ urlpatterns = patterns('',
                            # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
                        
                        # Custom views need to be added before the contrib views
-                       #(r'^gda/admin/respostas/pick/', admin_views.pick_resposta),
-                       (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/(?P<ano>\d+)[sS](?P<semestre>\d)/(?P<disciplina>[A-Z][A-Z]\d+)(?P<turma>[A-Z1-9#])/commit/$', admin_views.pick_respostas_modelo_commit),
-                       (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/(?P<ano>\d+)[sS](?P<semestre>\d)/(?P<disciplina>[A-Z][A-Z]\d+)(?P<turma>[A-Z1-9#])/$', admin_views.pick_respostas_modelo),
-                       (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/', admin_views.pick_respostas),
-                       (r'^gda/admin/alternative/pick_respostas/', admin_views.pick_respostas),
-                       (r'^gda/admin/new_avaliacao', admin_views.new_avaliacao),
-                       (r'^gda/admin/add_avaliacao/', admin_views.add_avaliacao),
-                       (r'^gda/admin/atribuicoes_incluidas', admin_views.disciplinas_processadas),
-                       # Uncomment the next line to enable the admin:
-                       (r'^gda/admin/(.*)', admin.site.root),
-                       (r'^gda/view_result', views.query_result),
-                       (r'^gda/resultados', views.view_result),
                        (r'^gda/$', views.home),
                        (r'^gda/logout/$', views.logout),
                        (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'registration/login.html'}),
@@ -46,4 +35,18 @@ urlpatterns = patterns('',
                        (r'^gda/busca/', include('resultados.urls')),
                        (r'^gda/(.*/)?(?P<path>.*\.js)$', 'django.views.static.serve', {'document_root': os.path.join(PROJECT_ROOT_PATH,'templates/script') }),
                        )
+
+
+urlpatterns += patterns('',
+    #(r'^gda/admin/respostas/pick/', admin_views.pick_resposta),
+    (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/(?P<ano>\d+)[sS](?P<semestre>\d)/(?P<disciplina>[A-Z][A-Z]\d+)(?P<turma>[A-Z1-9#])/commit/$', admin_views.pick_respostas_modelo_commit),
+    (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/(?P<ano>\d+)[sS](?P<semestre>\d)/(?P<disciplina>[A-Z][A-Z]\d+)(?P<turma>[A-Z1-9#])/$', admin_views.pick_respostas_modelo),
+    (r'^gda/admin/alternative/pick_respostas/[Ii][Cc]/', admin_views.pick_respostas),
+    (r'^gda/admin/alternative/pick_respostas/', admin_views.pick_respostas),
+    (r'^gda/admin/new_avaliacao', admin_views.new_avaliacao),
+    (r'^gda/admin/add_avaliacao', admin_views.add_avaliacao),
+    (r'^gda/admin/atribuicoes_incluidas', admin_views.disciplinas_processadas),
+    (r'^gda/admin/', include(admin.site.urls)),
+)
+
 
