@@ -43,7 +43,6 @@ class AvaliacaoAdmin(admin.ModelAdmin):
         else:
             self.message_user(request, msg)
             return HttpResponseRedirect(reverse("admin:sad_avaliacao_changelist"))
-       
 
 class ProfessorAdmin(admin.ModelAdmin):
     list_display = ('nome',)

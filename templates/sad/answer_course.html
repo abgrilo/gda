@@ -3,6 +3,7 @@
 <h1>{{ disciplina }}{{ turma }}
 <br />
 {{ atribuicao.professor.nome }}</h1>
+<h2>{{ semestre }}º semestre de {{ano}}</h2> 
 <br />
     <form method='GET' action='/gda/IC/{{ano}}s{{semestre}}/{{disciplina}}{{turma}}/commit/'>
         {% for p in perguntas %}

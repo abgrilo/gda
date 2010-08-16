@@ -66,7 +66,6 @@ class Avaliacao(models.Model):
     class Meta:
         verbose_name = 'avaliação'
         verbose_name_plural = 'avaliações'
-
             
 class Questionario(models.Model):
     tipo = models.CharField(max_length=128)
