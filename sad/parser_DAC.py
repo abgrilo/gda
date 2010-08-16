@@ -13,7 +13,7 @@ from sha import new
 import string
 from random import choice, random
 
-from sad.models import *
+from models import *
 
 # TODO: 1. melhorar as espressões regulares
 
@@ -65,14 +65,15 @@ def get_site(base, file):
     return site
 
 
-def add_disciplina(ld):
+def add_disciplina(ld, id_avaliacao):
 
     # questionário default
     try:
         q = Questionario.objects.get(tipo='default')
     except:
         # então não tem o questionário 'default'... hum, o que iremos fazer?!
-        q = Questionario(tipo='default', texto='default', semestre='2010-01-01')
+        avaliacao = Avaliacao.objects.get(id=id_avaliacao)
+        q = Questionario(tipo='default', texto='default', avaliacao=avaliacao)
         q.save()
     # inclui Disciplina no BD e cria lista com elas
     r = []
@@ -90,15 +91,14 @@ def add_disciplina(ld):
 # existem várias modalidades de mestrado e doutorado enquanto na grad não. Por
 # isso duas funções aqui: get_disc_grad() and get_disc_pos().
 
-def get_disc_grad(getbase):
-    
+def get_disc_grad(getbase, id_avaliacao):
     getfile = INSTITUTO + ".htm"
     s_disc = get_site(getbase, getfile)
     
     d_all_disc = re.compile(DRE_ALL_DISC)
     # gera lista de disciplinas
     l_disc = re.findall(d_all_disc, s_disc)
-    r = add_disciplina(l_disc)
+    r = add_disciplina(l_disc, id_avaliacao)
     return r
 
 
@@ -126,7 +126,7 @@ def set_finalizado(fin):
 # dada uma disciplina, get_matriculados descobre quais as turmas existentes e
 # a partir desses dados descobre todos os dados sobre cada turma (alunos,
 # matriculados e professor)
-def get_matriculados(disc, ano, nivel, semgrad='0', sempos='0'):
+def get_matriculados(disc, ano, nivel, semgrad='0', sempos='0', id_avaliacao=None):
     all_stu = []
     mech = mechanize.Browser()
     mech.set_handle_robots(False)
@@ -179,70 +179,80 @@ def get_matriculados(disc, ano, nivel, semgrad='0', sempos='0'):
         
         p = Professor.objects.filter(nome=m.group('docente'))
         d = Disciplina.objects.filter(sigla=disc)
-
+        
         dalu = re.compile(DRE_ALUNO)
         alunos = re.findall(dalu, s_turma)
         # cria a atribuicao
-        at = Atribuicao(disciplina = d[0], professor = p[0], turma=t, semestre='2010-01-01')
+        avaliacao = Avaliacao.objects.get(id=id_avaliacao)
+        at = Atribuicao(avaliacao=avaliacao, disciplina=d[0], professor=p[0], turma=t)
         at.save()
         #inclui os alunos
         for i in alunos:
             # FIXME: código porco
             ra = i[0]
             curso = i[2]
-            #TODO se for tirar os alunos de fora do IC
-            #remover aqui
-            if len(ra) == 5:
-                ra = '0' + ra
-            al = Aluno.objects.filter(username=ra)
-            if not al:
-                nome_sem_acento = normalize('NFKD', i[1].decode('utf-8')).encode('ASCII', 'ignore')	
-                email = (nome_sem_acento[0])
-                demail = re.compile(DRE_EMAIL)
-                n = re.search(demail, email)
-                email = email.lower()
-                email = email + ra + '@dac.unicamp.br'
+            if curso == '34' or curso == '42':
+                #TODO se for tirar os alunos de fora do IC
+                #remover aqui
+                if len(ra) == 5:
+                    ra = '0' + ra
+                al = Aluno.objects.filter(username=ra)
+                if not al:
+                    nome_sem_acento = normalize('NFKD', i[1].decode('utf-8')).encode('ASCII', 'ignore')	
+                    email = (nome_sem_acento[0])
+                    demail = re.compile(DRE_EMAIL)
+                    n = re.search(demail, email)
+                    email = email.lower()
+                    email = email + ra + '@dac.unicamp.br'
 
-                pass_size = 8
-                passwd = 'caco'  #''.join([choice(string.letters + string.digits) for j in range(pass_size)])
-                salt = new(str(random())).hexdigest()[:5]
-                hash1 = new(salt + passwd).hexdigest()
-                hash2 = 'sha1$' + salt + '$' + hash1
+                    pass_size = 8
+                    passwd = 'caco'  #''.join([choice(string.letters + string.digits) for j in range(pass_size)])
+                    salt = new(str(random())).hexdigest()[:5]
+                    hash1 = new(salt + passwd).hexdigest()
+                    hash2 = 'sha1$' + salt + '$' + hash1
                 
-                new_stu = []
-                new_stu.append(ra)
-                new_stu.append(passwd)
-                new_stu.append(email)
-                # FIXME: falta mestrado aqui
-                if curso == '34' or curso == '42' or curso == '53':
-                    email2 = 'ra' + ra + '@students.ic.unicamp.br'
-                    new_stu.append(email2)
+                    new_stu = []
+                    new_stu.append(ra)
+                    new_stu.append(passwd)
+                    new_stu.append(email)
+                    # FIXME: falta mestrado aqui
+                    if curso == '34' or curso == '42' or curso == '53':
+                        email2 = 'ra' + ra + '@students.ic.unicamp.br'
+                        new_stu.append(email2)
 
-                all_stu.append(new_stu)
+                    all_stu.append(new_stu)
 
 
-                al = Aluno(username=ra, password=hash2, nome= i[1], email=email, curso= curso)
-                al.save()
-                at.aluno.add(al)
-            else: 
-                at.aluno.add(al[0])
+                    al = Aluno(username=ra, password=hash2, nome= i[1], email=email, curso= curso)
+                    al.save()
+                    at.aluno.add(al)
+                else: 
+                    at.aluno.add(al[0])
     return all_stu
 
 #main()
 # O instituto será fornecido no futuro via inteface administrativa do django.
 # Por enquanto temos:
-def buscarDados(semestre, ano):
+def buscarDados(id_avaliacao):
   disciplinas = []
   set_finalizado(False)
   os.system("rm IC.htm*")
   all_stu = []
 
-  ld = get_disc_grad("http://www.dac.unicamp.br/sistemas/horarios/grad/G" + semestre + "S0/" )
+  avaliacao = Avaliacao.objects.get(id=id_avaliacao)  
+  ld = get_disc_grad(
+    "http://www.dac.unicamp.br/sistemas/horarios/grad/G" + 
+    avaliacao.semestre + 
+    "S0/", id_avaliacao)
   ld = set(ld)
   ld = list(ld)
-  #ld = ld[:3] # Apenas na fase de desenvolvimento
+  #ld = ld[:1] # Apenas na fase de desenvolvimento
   for d in ld:
-    all_stu.extend(get_matriculados(disc=d, ano=ano, semgrad=semestre, nivel='G'))
+    all_stu.extend(get_matriculados(
+        disc=d, ano=avaliacao.ano, 
+        semgrad=avaliacao.semestre, 
+        nivel='G', 
+        id_avaliacao=id_avaliacao))
  ## fim GRAD #
 
 

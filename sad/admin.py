@@ -9,11 +9,12 @@ class QuestionarioInline(admin.TabularInline):
     model = Questionario
 
 class AvaliacaoAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'ano', 'semestre', 'data_inicio', 'data_fim', 'liberar_consultas']
+    list_display = ['nome', 'ano', 'semestre', 'data_inicio', 'data_fim', 
+                    'liberar_consultas']
     search_fields = ['nome']
-    ordering = ['data_inicio']
+    ordering = ['-ano', '-semestre']
     inlines = [QuestionarioInline]
-
+    
     def response_add(self, request, obj, post_url_continue='../%s/'):
         """ 
             Determina o HttpResponse para add_avaliacao. 
@@ -42,8 +43,7 @@ class AvaliacaoAdmin(admin.ModelAdmin):
         else:
             self.message_user(request, msg)
             return HttpResponseRedirect(reverse("admin:sad_avaliacao_changelist"))
-        
-
+       
 
 class ProfessorAdmin(admin.ModelAdmin):
     list_display = ('nome',)
@@ -68,12 +68,13 @@ class AlunoAdmin(admin.ModelAdmin):
 class DisciplinaAdmin(admin.ModelAdmin):
     list_display = ('sigla', 'nome')
     search_fields = ['sigla', 'nome']
+    ordering = ['sigla']
 
 class AtribuicaoAdmin(admin.ModelAdmin):
     list_display = ('disciplina','professor', 'turma')
-    list_filter = ['disciplina', 'semestre', 'professor']
-    search_fields = ['disciplina', ] 
-    
+    list_filter = ['disciplina', 'professor']
+    search_fields = ['disciplina'] 
+    ordering = ['disciplina']    
 
 class PerguntaAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -92,7 +93,7 @@ class RespostaAdmin(admin.ModelAdmin):
 
     list_display = ('pergunta', textoOuAlternativa, 'atribuicao',)
     list_filter = ['atribuicao',]
-    pass
+     
     
 class AlternativaAdmin(admin.ModelAdmin):
     list_display = ('texto', 'pergunta',)

@@ -35,7 +35,7 @@ def busca(request):
     atribuicao = Atribuicao.objects.all()
     professor = Professor.objects.all()
     if parametros['semestre']:
-        atribuicao = atribuicao.filter(semestre__icontains=parametros['semestre'])
+        atribuicao = atribuicao.filter(avaliacao__semestre__icontains=parametros['semestre'])
     if parametros['disciplina']:
         atribuicao = atribuicao.filter(disciplina=parametros['disciplina'])
     if parametros['turma']:
@@ -51,10 +51,9 @@ def disciplina(request):
         Mostra as respostas de uma disciplina avaliada. 
     """
     atribuicao = Atribuicao.objects.get(id=request.GET['atribuicao'])
-    ano = atribuicao.semestre
+    avaliacao = atribuicao.avaliacao
     turma = atribuicao.turma
     disciplina = atribuicao.disciplina
-    semestre = ano
     professor = atribuicao.professor 
     discs = Disciplina.objects.get(sigla=disciplina)
     try: 
@@ -62,8 +61,6 @@ def disciplina(request):
         perguntas = Pergunta.objects.filter(questionario=d.questionario)
         pergL = []
         respL = []
-        atribuicao = Atribuicao.objects.filter(disciplina=disciplina,
-                turma=turma, semestre=semestre)
 
         for pergunta in perguntas:
             respostas = Resposta.objects.filter(pergunta=pergunta, atribuicao=atribuicao)
@@ -99,7 +96,7 @@ def disciplina(request):
                 pergL.append({'id' : pergunta.id, 'pergunta' : pergunta.texto, 'dissertativas' : respL,})
         return render_to_response(
             'resultados/respostas.html', {
-                'semestre': semestre ,
+                'avaliacao': avaliacao ,
                 'disciplina': disciplina,
                 'professor': professor,
                 'turma': turma,

@@ -118,7 +118,7 @@ teoricas.extend([
 ])
 
 def main():
-  from sad.models import Disciplina, Questionario
+  from sad.models import Disciplina, Questionario, Avaliacao
 
   # montando um dicionário das matérias com o tipo de questionário delas
   discs = {}
@@ -137,7 +137,8 @@ def main():
       q = Questionario.objects.filter(tipo=discs[sigla])[0]
     except:
       # no existe esto questionario!!!
-      q = Questionario(tipo=discs[sigla], texto=discs[sigla], semestre='2010-01-01')
+      avaliacao = Avaliacao.objects.get(id='1')
+      q = Questionario(tipo=discs[sigla], texto=discs[sigla], avaliacao=avaliacao)
       q.save()
     d.questionario = q
     d.save()

@@ -23,8 +23,6 @@
 {% endif %}{% endblock %}
 
 {% block content %}
-teste
-<a href="{% url admin:sad_avaliacao_add %}">Adicionar Avaliação</a>
 <div id="content-main">
 {% block object-tools %}
 {% if change %}{% if not is_popup %}
@@ -33,6 +31,8 @@ teste
   </ul>
 {% endif %}{% endif %}
 {% endblock %}
+
+
 <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.module_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %}
 <div>
 {% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
@@ -58,6 +58,7 @@ teste
 
 {% submit_row %}
 
+<b><a href="{% url sad.admin_views.new_avaliacao %}">Buscar dados da DAC para a Avaliação</a></b>
 {% if adminform and add %}
    <script type="text/javascript">document.getElementById("{{ adminform.first_field.auto_id }}").focus();</script>
 {% endif %}
