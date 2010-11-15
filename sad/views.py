@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import login_required
 from sad import models
 from gdadefs import *
 from md5 import new
-from forms import PerguntaForm
 from django.db.models import F
 
 @login_required
