@@ -33,6 +33,7 @@ teoricas = [
   'MO441', 
   'MO637', 
   'MC918', 
+  'MC922',
 ]
 
 praticas = [ 
@@ -62,6 +63,7 @@ teoricas_praticas = [
   'MC906',
   'MC942',  
   'MC930', 
+  'MC919', 
   'MO640', 
 ]
 
