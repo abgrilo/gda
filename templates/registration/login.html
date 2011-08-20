@@ -12,7 +12,7 @@
         <p><small>Informe seu RA e senha para ser autenticar no GDA</small></p>
         <br />
     </div>
-<form method="post" action="{% url django.contrib.auth.views.login %}">{% csrf_token %}
+<form method="post" action="{% url django.contrib.auth.views.login %}">
 <table>
 <tr>
     <td>{{ form.username.label_tag }}</td>

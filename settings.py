@@ -85,4 +85,5 @@ INSTALLED_APPS = (
     'sad',
 )
 
+
 LOGIN_REDIRECT_URL = '/gda/'

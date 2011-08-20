@@ -195,7 +195,7 @@ def get_matriculados(disc):
                 email = email + ra + '@dac.unicamp.br'
 
                 pass_size = 8
-                passwd = 'caco'  #''.join([choice(string.letters + string.digits) for j in range(pass_size)])
+                passwd = ''.join([choice(string.letters + string.digits) for j in range(pass_size)])
                 salt = new(str(random())).hexdigest()[:5]
                 hash1 = new(salt + passwd).hexdigest()
                 hash2 = 'sha1$' + salt + '$' + hash1
@@ -225,7 +225,7 @@ def get_matriculados(disc):
 
 INSTITUTO='IC'
 ANO='2010'
-SEMESTRE='1'
+SEMESTRE='2'
 
 all_stu = []
 

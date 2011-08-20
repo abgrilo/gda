@@ -20,6 +20,8 @@ urlpatterns = patterns('',
                            # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
                        
                        # Custom views need to be added before the contrib views
+                       (r'^/$', views.home),
+                       (r'^$', views.home),
                        (r'^gda/$', views.home),
                        (r'^gda/logout/$', views.logout),
                        (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'registration/login.html'}),

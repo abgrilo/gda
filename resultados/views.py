@@ -11,13 +11,11 @@ from sad.models import *
     Views para consulta das respostas das avaliações.
 """
 
-@login_required
 def index(request):
     semestres = Avaliacao.objects.all().order_by()
     return render_to_response('resultados/busca.html', {'semestre': semestres})
 
 
-@login_required
 def busca(request):
     """
         Faz uma busca generica/específica.
@@ -45,7 +43,6 @@ def busca(request):
     semestre = Avaliacao.objects.all().order_by()
     return render_to_response('resultados/busca.html', {'atribuicao': atribuicao, 'semestre': semestre})
 
-@login_required
 def disciplina(request):
     """
         Mostra as respostas de uma disciplina avaliada. 
@@ -55,10 +52,9 @@ def disciplina(request):
     turma = atribuicao.turma
     disciplina = atribuicao.disciplina
     professor = atribuicao.professor 
-    discs = Disciplina.objects.get(sigla=disciplina)
-    try: 
-        d = discs
-        perguntas = Pergunta.objects.filter(questionario=d.questionario)
+    try:
+        quest = disciplina.questionario
+        perguntas = Pergunta.objects.filter(questionario=quest)
         pergL = []
         respL = []
 

@@ -206,7 +206,7 @@ def get_matriculados(disc, ano, nivel, semgrad='0', sempos='0', id_avaliacao=Non
                     email = email + ra + '@dac.unicamp.br'
 
                     pass_size = 8
-                    passwd = 'caco'  #''.join([choice(string.letters + string.digits) for j in range(pass_size)])
+                    passwd = ''.join([choice(string.letters + string.digits) for j in range(pass_size)])
                     salt = new(str(random())).hexdigest()[:5]
                     hash1 = new(salt + passwd).hexdigest()
                     hash2 = 'sha1$' + salt + '$' + hash1

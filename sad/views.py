@@ -178,7 +178,7 @@ def commit_answer_course(request, ano, semestre, disciplina, turma):
 def home(request):
     if request.user.is_authenticated():
         # proceed if already authenticated
-        avaliacao = models.Avaliacao.objects.get(ano='2010', semestre='1')
+        avaliacao = models.Avaliacao.objects.get(ano='2010', semestre='2')
         return all_to_answer(request, avaliacao.ano, avaliacao.semestre) 
     else:
         return render_to_response('sad/home.html', {'error' : False,})
