@@ -4,10 +4,14 @@
 {% block content %}
 <script language="javascript" src="/gda/jquery.js">
 </script>
-<form method='GET' action='/gda/admin/add_avaliacao/'>
+<form method='POST' action='/gda/admin/add_avaliacao/'>
   <div class="entry">
        <b>Semestre</b> <input type="text" name="semestre" />
        <b>Ano</b> <input type="text" name="ano" />
+       <b>Data inicio</b> <input type="text" name="data_inicio" />
+       <b>Data fim</b> <input type="text" name="data_fim" />
+  <br/>
+  As datas deverão estar na forma "YYYY-MM-DD"
  </div>
  <input type='submit' value='Enviar'>
 </form>
